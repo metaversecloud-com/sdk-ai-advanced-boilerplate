@@ -1,3 +1,4 @@
+import { DroppedAssetInterface } from "@rtsdk/topia";
 import { VisitorDataObject } from "@shared/types/VisitorData";
 
 export const SET_HAS_INTERACTIVE_PARAMS = "SET_HAS_INTERACTIVE_PARAMS";
@@ -23,11 +24,12 @@ export interface InitialState {
   error?: string;
   hasInteractiveParams?: boolean;
   visitorData?: VisitorDataObject;
+  droppedAsset?: DroppedAssetInterface;
 }
 
 export type ActionType = {
   type: string;
-  payload: InitialState;
+  payload: Partial<InitialState>;
 };
 
 export type ErrorType =

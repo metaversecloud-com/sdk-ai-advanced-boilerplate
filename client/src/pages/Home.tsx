@@ -12,15 +12,12 @@ import { backendAPI, setErrorMessage, setGameState } from "@/utils";
 
 export const Home = () => {
   const dispatch = useContext(GlobalDispatchContext);
-  const { hasInteractiveParams } = useContext(GlobalStateContext);
+  const { droppedAsset, hasInteractiveParams } = useContext(GlobalStateContext);
 
   const [isLoading, setIsLoading] = useState(true);
+  const imgSrc = droppedAsset?.topLayerURL || droppedAsset?.bottomLayerURL;
 
   useEffect(() => {
-    backendAPI
-      .put("/world/fire-toast", { title: "Nice Work!", text: "You've successfully completed the task!" })
-      .catch((error) => setErrorMessage(dispatch, error as ErrorType));
-
     if (hasInteractiveParams) {
       backendAPI
         .get("/game-state")
@@ -34,7 +31,14 @@ export const Home = () => {
 
   return (
     <PageContainer isLoading={isLoading} headerText="Server side example using interactive parameters">
-      <>{/* Add content or components here */}</>
+      {droppedAsset?.id && (
+        <div className="flex flex-col w-full items-start">
+          <p className="mt-4 mb-2">
+            You have successfully retrieved the dropped asset details for {droppedAsset.assetName}!
+          </p>
+          {imgSrc && <img className="w-96 h-96 object-cover rounded-2xl my-4" alt="preview" src={imgSrc} />}
+        </div>
+      )}
     </PageContainer>
   );
 };

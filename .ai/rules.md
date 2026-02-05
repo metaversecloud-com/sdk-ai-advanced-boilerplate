@@ -1,5 +1,7 @@
 # Base AI Rules (Agent Agnostic)
 
+> **Note**: This file contains base rules that are also summarized in `../CLAUDE.md`. When working in the sdk-apps folder, `../CLAUDE.md` is the primary reference. This file provides additional detail and context.
+
 ROLE
 You are a senior repo assistant working INSIDE this codebase. Extend the app ONLY by modifying allowed files and following established patterns.
 
@@ -37,30 +39,21 @@ SDK USAGE POLICY
   - Always ensure defaults: if a data object is missing, initialize via `setDataObject` with a default shape before calling `updateDataObject`.
   - Follow the pattern: `handleGetGameState.ts` → `getDroppedAsset` → `initializeDroppedAssetDataObject`. If defaults are unclear, STOP and ask.
   - Reference SDK docs per controller class for available methods and don't invent new methods (e.g. [DroppedAsset.fetchDataObject()](https://metaversecloud-com.github.io/mc-sdk-js/classes/controllers.DroppedAsset.html#fetchdataobject)).
-  - All of our data object methods have an optional lock argument. Create a lock id using parameters specific to the action you are taking plus a timestamp when you want to ensure that the data object is not updated multiple times unnecessarily and/or to ensure that data is not accidentally overwritten. As an example, a game may allow users to Reset the game so that they can start a new one but we'd only want the reset to happen once even if the user(s) press the button multiple times. To prevent multiple resets from happening within a 10 second window (stopping the calls from going through and preventing the race condition), we'd lock the object by. Optionally you can also set `releaseLock` to true if you want to remove the lock after the task completes successfully so that the next request goes through successfully regardless of timing. (See example for analytics and locs below.)
-  - Use these methods when prompted to track analytics. `setDataObject`, `updateDataObject`, and `incrementDataObjectValue` all accept an optional `analytics` array and can be used even if the data object itself is not being updated. (See example for analytics and locs below.)
+  - Use these methods when prompted to track analytics. `setDataObject`, `updateDataObject`, and `incrementDataObjectValue` all accept an optional `analytics` array and can be used even if the data object itself is not being updated. See example below.
 
 ```ts
 await visitor.setDataObject(
   { hello: "world" },
-  {
-    analytics: [{ analyticName: "restarts" }], lock: { lockId, releaseLock: true }
-    lock: { lockId: `${sceneDropId}-${resetCount}-${new Date(Math.round(new Date().getTime() / 10000) * 10000)}`, releaseLock: true },
-  },
+  { analytics: [{ analyticName: "starts" }], lock: { lockId, releaseLock: true } },
 );
 
 await visitor.updateDataObject(
   {},
-  {
-    analytics: [{ analyticName: "playerTurns", profileId, uniqueKey: profileId, urlSlug }]
-    lock: { lockId: `${sceneDropId}-${turnCount}-${new Date(Math.round(new Date().getTime() / 10000) * 10000)}`, releaseLock: false },
-  },
+  { analytics: [{ analyticName: "emotesUnlocked", profileId, uniqueKey: profileId, urlSlug }] },
 );
 
-await visitor.incrementDataObjectValue(`restarts`, 1, {
-  analytics: [{ analyticName: "restarts", incrementBy: 1, profileId, uniqueKey: profileId, urlSlug }],
-  lock: { lockId: `${sceneDropId}-${resetCount}-${new Date(Math.round(new Date().getTime() / 10000) * 10000)}`
-  },
+await visitor.incrementDataObjectValue(`completions`, 1, {
+  analytics: [{ analyticName: "completions", incrementBy: 2, profileId, uniqueKey: profileId, urlSlug }],
 });
 ```
 
@@ -70,16 +63,15 @@ ARCHITECTURE & BOUNDARIES
 - Flow: UI → client/backendAPI.ts (unchangeable) → server routes/controllers → Topia SDK.
 - Need new client behavior? Expose a new server route; do NOT bypass backendAPI.ts.
 - Follow patterns in existing client files for setting up pages, components, and especially calling the server.
-- **REQUIRED: Use SDK CSS classes** from https://sdk-style.s3.amazonaws.com/styles-3.0.2.css; see comprehensive examples in `.ai/examples/styles.md`.
+- **REQUIRED: Use SDK CSS classes** from https://sdk-style.s3.amazonaws.com/styles-3.0.2.css; see `.ai/style-guide.md`.
   - Use `.btn`, `.card`, `.h1`-`.h4`, `.p1`-`.p4`, etc. classes directly from the SDK
   - Do NOT use Tailwind utility classes except when absolutely necessary and no SDK class exists
   - Never use inline styles except for dynamic positioning that cannot be handled via classes
-  - Follow the exact patterns shown in `.ai/examples/page.md` for component structure
+  - Follow the exact patterns shown in `.ai/style-guide.md` for component structure
 - Follow server/controllers patterns (naming, error handling, response shape).
 - In utils, catch blocks construct & throw a new Error (see server/utils/droppedAssets/getDroppedAsset.ts). Controllers catch like server/controllers/handleGetGameState.ts.
 - Keep the SDK wrapper thin to simplify mocking/tests.
 - World, Visitor, User, and DroppedAsset classes in the SDK all have methods for handling data objects (`fetchDataObject`, `setDataObject`, `updateDataObject`, and `incrementDataObjectValue`). Any data object used should be set up initially with a default object to ensure the data object has the correct structure before `updateDataObject` is called. An end to end example of this can be found in handleGetGameState.ts which calls the getDroppedAsset util which then calls the initializeDroppedAssetDataObject util where if properties are missing from the data object we assume it has never been set up and call `droppedAsset.setDataObject` with the appropriate default data. This ensures that in other controllers we are able to properly update the data object and an example of this can be seen in handleDropAsset.ts. If prompted to update a data object be sure to follow this pattern and create new initialize utils as need, pause and ask for clarification if default data to be used in `setDataObject` is unclear. Additional documentation for these methods can be found in the ReadMe and for each controller in the @rtsdk/topia repo (e.g. https://metaversecloud-com.github.io/mc-sdk-js/classes/controllers.Visitor.html#setdataobject).
--
 
 RESPONSE SCHEMA (Controllers)
 

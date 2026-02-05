@@ -14,6 +14,7 @@ This document provides Claude-specific guidelines for working with this Topia SD
 ### File Modification Restrictions
 
 **DO NOT MODIFY these protected files:**
+
 - `client/App.tsx`
 - `client/src/components/PageContainer.tsx`
 - `client/backendAPI.ts`
@@ -22,6 +23,7 @@ This document provides Claude-specific guidelines for working with this Topia SD
 - `server/errorHandler.ts`
 
 **REQUIRED FILES:**
+
 - `client/topiaInit.ts` MUST exist (may adjust exports if needed)
 
 ### Architecture & Data Flow
@@ -34,24 +36,29 @@ This document provides Claude-specific guidelines for working with this Topia SD
 ### SDK Usage Guidelines
 
 #### Initialization
+
 - Initialize Topia ONCE on the server with environment variables:
   - `API_KEY`, `INTERACTIVE_KEY`, `INTERACTIVE_SECRET`
   - `INSTANCE_DOMAIN=api.topia.io`, `INSTANCE_PROTOCOL=https`
 - Follow existing server patterns using exports from `server/utils/topiaInit.ts`
 
 #### Error Handling
+
 - Wrap all SDK calls in try/catch blocks
 - Either return JSON `{ success: boolean, ... }` or throw and let `server/errorHandler.ts` handle it
 - Follow existing controller patterns for error handling
 
 #### Data Objects Pattern
+
 World/Visitor/User/DroppedAsset classes provide these methods:
+
 - `fetchDataObject` - Get current data
 - `setDataObject` - Set initial/complete data
 - `updateDataObject` - Update partial data
 - `incrementDataObjectValue` - Increment numeric values
 
 **CRITICAL**: Always ensure defaults before calling `updateDataObject`:
+
 1. Check if data object exists
 2. If missing properties, call `setDataObject` with default shape
 3. Then safely use `updateDataObject`
@@ -59,23 +66,50 @@ World/Visitor/User/DroppedAsset classes provide these methods:
 Follow the pattern: `handleGetGameState.ts` → `getDroppedAsset` → `initializeDroppedAssetDataObject`
 
 #### Analytics Integration
+
 All data object methods accept optional `analytics` array:
 
 ```typescript
 await visitor.setDataObject(
   { hello: "world" },
-  { analytics: [{ analyticName: "starts" }], lock: { lockId, releaseLock: true } }
+  { analytics: [{ analyticName: "starts" }], lock: { lockId, releaseLock: true } },
 );
 
 await visitor.updateDataObject(
   {},
-  { analytics: [{ analyticName: "emotesUnlocked", profileId, uniqueKey: profileId, urlSlug }] }
+  { analytics: [{ analyticName: "emotesUnlocked", profileId, uniqueKey: profileId, urlSlug }] },
 );
 
 await visitor.incrementDataObjectValue(`completions`, 1, {
-  analytics: [{ analyticName: "completions", incrementBy: 2, profileId, uniqueKey: profileId, urlSlug }]
+  analytics: [{ analyticName: "completions", incrementBy: 2, profileId, uniqueKey: profileId, urlSlug }],
 });
 ```
+
+### Inventory Cache Pattern
+
+When your app needs to access ecosystem inventory items (badges, decorations, etc.), implement the inventory cache pattern to reduce API calls:
+
+```typescript
+// server/utils/inventoryCache.ts
+import { getCachedInventoryItems } from "./inventoryCache.js";
+
+// Get all cached items (24-hour TTL)
+const items = await getCachedInventoryItems({ credentials });
+
+// Filter for badges
+const badges = items.filter((item) => item.type === "BADGE" && item.status === "ACTIVE");
+
+// Award a badge to visitor
+const badge = items.find((item) => item.name === "Winner Badge");
+await visitor.grantInventoryItem(badge, 1);
+```
+
+**Key Features:**
+
+- 24-hour cache TTL reduces API calls
+- Stale cache fallback on API failure
+- `forceRefresh: true` option for immediate refresh
+- See `.ai/examples/inventoryCache.md` for full implementation
 
 ### Response Schema (Controllers)
 
@@ -90,6 +124,7 @@ await visitor.incrementDataObjectValue(`completions`, 1, {
 **MUST use SDK CSS classes from**: https://sdk-style.s3.amazonaws.com/styles-3.0.2.css
 
 #### Typography
+
 ```tsx
 <h1 className="h1">Heading 1</h1>
 <h2 className="h2">Heading 2</h2>
@@ -98,6 +133,7 @@ await visitor.incrementDataObjectValue(`completions`, 1, {
 ```
 
 #### Buttons
+
 ```tsx
 <button className="btn">Primary Action</button>
 <button className="btn btn-outline">Secondary Action</button>
@@ -106,6 +142,7 @@ await visitor.incrementDataObjectValue(`completions`, 1, {
 ```
 
 #### Cards
+
 ```tsx
 <div className="card">
   <div className="card-image">
@@ -124,6 +161,7 @@ await visitor.incrementDataObjectValue(`completions`, 1, {
 ```
 
 #### Form Elements
+
 ```tsx
 <label className="label">Text Input</label>
 <input className="input" type="text" placeholder="placeholder" />
@@ -135,6 +173,7 @@ await visitor.incrementDataObjectValue(`completions`, 1, {
 ```
 
 ### Styling Rules
+
 - **SDK Classes First**: Always use SDK classes before considering alternatives
 - **No Tailwind**: Only use Tailwind when no SDK class exists
 - **No Inline Styles**: Except for dynamic positioning that cannot be handled via classes
@@ -179,9 +218,7 @@ export const ComponentName = ({ prop1, prop2 }: ComponentProps) => {
   return (
     <div className="container">
       <h2 className="h2">Title</h2>
-      <div className="card">
-        {/* Content using SDK classes */}
-      </div>
+      <div className="card">{/* Content using SDK classes */}</div>
     </div>
   );
 };
@@ -198,6 +235,7 @@ export default ComponentName;
 ## Environment Setup
 
 Provide `.env.example` with:
+
 ```
 API_KEY=your_api_key_here
 INTERACTIVE_KEY=your_interactive_key_here
@@ -209,6 +247,7 @@ INSTANCE_PROTOCOL=https
 ## Implementation Workflow
 
 1. **PLAN FIRST** - Output concise plan before coding:
+
    - File tree delta
    - Endpoint signatures
    - Data shapes (TS interfaces)
@@ -236,6 +275,7 @@ When implementing changes, return:
 ## When Blocked
 
 If SDK calls or inputs are unclear:
+
 - STOP, propose minimal stub
 - List assumptions
 - Ask 1 concise question
@@ -248,5 +288,11 @@ If SDK calls or inputs are unclear:
 - **Examples**: `.ai/examples/` directory
 - **Planning Template**: `.ai/templates/plan.md`
 - **Base Rules**: `.ai/rules.md`
+
+### Common Patterns
+
+- **Inventory Cache**: See `.ai/examples/inventoryCache.md` for caching ecosystem inventory items (badges, decorations, etc.)
+- **Data Objects**: See `.ai/examples/handleGetConfiguration.md` for data object initialization patterns
+- **Dropped Assets**: See `.ai/examples/handleDropAssets.md`, `.ai/examples/handleUpdateDroppedAsset.md`, and `.ai/examples/handleRemoveDroppedAsset.md` for asset management
 
 Always reference the comprehensive documentation in the `.ai/` folder for detailed examples and patterns before starting implementation.
