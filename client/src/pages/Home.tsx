@@ -13,9 +13,9 @@ import { backendAPI, setErrorMessage, setGameState } from "@/utils";
 export const Home = () => {
   const dispatch = useContext(GlobalDispatchContext);
   const { droppedAsset, hasInteractiveParams } = useContext(GlobalStateContext);
+  const imgSrc = droppedAsset?.topLayerURL || droppedAsset?.bottomLayerURL;
 
   const [isLoading, setIsLoading] = useState(true);
-  const imgSrc = droppedAsset?.topLayerURL || droppedAsset?.bottomLayerURL;
 
   useEffect(() => {
     if (hasInteractiveParams) {

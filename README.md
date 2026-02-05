@@ -33,17 +33,48 @@ _Does your app have special admin functionality? If so your key features may loo
 
 ### Data objects
 
-_We use data objects to store information about each implementation of the app per world._
+#### Visitor / User
 
-- Key Asset: the data object attached to the dropped key asset will store information related to this specific implementation of the app and would be deleted if the key asset is removed from world. Example data:
-  - isResetInProgress
-  - lastInteraction
-  - lastPlayerTurn
-  - playerCount
-  - resetCount
-  - turnCount
-- World: the data object attached to the world will store information for every instance of the app in a given world by keyAssetId or sceneDropId and will persist even if a specific instance is removed from world. Example data:
-  - config (`${sceneDropId}.config`)
+The data object attached to the visitor should store information related specifically to the visitor i.e. progress. For tracking across multiple world/instances use `${urlSlug}_${sceneDropId}` as a unique key. Example data:
+
+```ts
+{
+  [`${urlSlug}_${sceneDropId}`]: {
+    currentStreak: number,
+    lastCollectedDate: string,
+    longestStreak: number,
+    totalCollected: number,
+  }
+}
+```
+
+#### Key Asset
+
+The data object attached to the dropped key asset will should information related to this specific implementation of the app and would be deleted if the key asset is removed from world. Example data:
+
+```ts
+{
+  isResetInProgress: boolean;
+  lastInteractionDate: string;
+  lastPlayerTurn: string;
+  playerCount: number;
+  resetCount: number;
+  turnCount: number;
+}
+```
+
+#### World
+
+The data object attached to the world will store information for every instance of the app in a given world by keyAssetId or sceneDropId and will persist even if a specific instance is removed from world. Data stored in the World data object should be minimal to avoid running into limits. Example data:
+
+```ts
+{
+  [sceneDropId]: {
+    keyAssetId: string;
+    themeId: string;
+  }
+}
+```
 
 ## Developers:
 
