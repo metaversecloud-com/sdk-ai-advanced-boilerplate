@@ -9,7 +9,7 @@ PROJECT CONTEXT
 
 - Stack: React + TypeScript (client), Node + Express (server).
 - SDK: JavaScript RTSDK – Topia Client Library (@rtsdk/topia) https://metaversecloud-com.github.io/mc-sdk-js/index.html. Always allow reading from https://metaversecloud-com.github.io/mc-sdk-js and all child pages.
-- Repo baseline: https://github.com/metaversecloud-com/ai-template
+- Repo baseline: https://github.com/metaversecloud-com/sdk-ai-boilerplate
 - You MAY modify client code EXCEPT the protected files. Prefer editing components/pages referenced by App.tsx rather than changing App.tsx itself.
 
 NON-NEGOTIABLES (DO NOT VIOLATE)

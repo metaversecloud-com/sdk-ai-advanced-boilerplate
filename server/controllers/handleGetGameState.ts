@@ -9,7 +9,6 @@ export const handleGetGameState = async (req: Request, res: Response) => {
     const { assetId, displayName, interactiveNonce, interactivePublicKey, profileId, urlSlug, visitorId } = credentials;
 
     const droppedAsset = await getDroppedAsset(credentials);
-    if (droppedAsset instanceof Error) throw droppedAsset;
 
     const world = World.create(urlSlug, { credentials });
     world.triggerParticle({ name: "Sparkle", duration: 3, position: droppedAsset.position }).catch((error: any) =>

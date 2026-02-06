@@ -7,7 +7,7 @@ This document provides Claude-specific guidelines for working with this Topia SD
 - **Stack**: React + TypeScript (client), Node + Express (server)
 - **SDK**: JavaScript RTSDK – Topia Client Library (@rtsdk/topia)
 - **SDK Documentation**: https://metaversecloud-com.github.io/mc-sdk-js/index.html
-- **Baseline Repository**: https://github.com/metaversecloud-com/ai-template
+- **Baseline Repository**: https://github.com/metaversecloud-com/sdk-ai-boilerplate
 
 ## Core Development Rules
 

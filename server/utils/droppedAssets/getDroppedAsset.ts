@@ -1,7 +1,7 @@
 import { Credentials, IDroppedAsset } from "../../types/index.js";
-import { DroppedAsset, initializeDroppedAssetDataObject } from "../index.js";
+import { DroppedAsset, initializeDroppedAssetDataObject, standardizeError } from "../index.js";
 
-export const getDroppedAsset = async (credentials: Credentials) => {
+export const getDroppedAsset = async (credentials: Credentials): Promise<IDroppedAsset> => {
   try {
     const { assetId, urlSlug } = credentials;
 
@@ -17,7 +17,7 @@ export const getDroppedAsset = async (credentials: Credentials) => {
     await droppedAsset.fetchDataObject();
 
     return droppedAsset;
-  } catch (error: any) {
-    return new Error(error);
+  } catch (error) {
+    throw standardizeError(error);
   }
 };

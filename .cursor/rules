@@ -2,7 +2,7 @@
 
 [project]
 description = "React + TypeScript client, Node + Express server, Topia RTSDK integration"
-repo = "https://github.com/metaversecloud-com/ai-template"
+repo = "https://github.com/metaversecloud-com/sdk-ai-boilerplate"
 sdk = "@rtsdk/topia (https://metaversecloud-com.github.io/mc-sdk-js/index.html)"
 goal = "App runs inside an iframe in Topia."
 

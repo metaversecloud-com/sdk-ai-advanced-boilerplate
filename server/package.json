@@ -1,5 +1,5 @@
 {
-  "name": "@sdk-ai-template/server",
+  "name": "@sdk-ai-boilerplate/server",
   "private": true,
   "version": "0.0.0",
   "type": "module",
