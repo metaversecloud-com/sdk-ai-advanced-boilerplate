@@ -13,7 +13,13 @@ function checkEnvVariables() {
   const missingVariables = requiredEnvVariables.filter((variable) => !process.env[variable]);
 
   if (missingVariables.length > 0) {
-    throw new Error(`Missing required environment variables in the .env file: ${missingVariables.join(", ")}`);
+    if (process.env.NODE_ENV === "development" && process.env.API_KEY) {
+      console.warn(
+        `⚠️  Missing interactive credentials (${missingVariables.join(", ")}). Dev routes will work, but interactive auth will not.`,
+      );
+    } else {
+      throw new Error(`Missing required environment variables in the .env file: ${missingVariables.join(", ")}`);
+    }
   } else {
     console.log("All required environment variables provided.");
   }

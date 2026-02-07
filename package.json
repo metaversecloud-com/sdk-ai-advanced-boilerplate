@@ -5,6 +5,7 @@
   "description": "",
   "type": "module",
   "scripts": {
+    "setup": "node scripts/setup.js",
     "build": "npm run build -ws",
     "start": "npm run start -w server",
     "dev": "concurrently \"npm run dev-server\" \"npm run dev-client\"",
