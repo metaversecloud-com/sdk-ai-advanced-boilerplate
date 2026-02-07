@@ -2,12 +2,15 @@
 
 ## Quick Start — What Are You Doing?
 
+**Resuming work?** Run `git log --oneline -20` and `git diff main~5..HEAD` to understand recent progress. Use `/remembering-conversations` to recall past context and decisions.
+
 | Task | Workflow |
 |------|---------|
 | **New app from boilerplate** | 1. `/brainstorming` → multi-file PRD in `.ai/templates/prd/` 2. `/writing-plans` → implementation plan 3. Follow `.ai/checklists/new-app.md` 4. Build with `.ai/guide/` phases 5. `/mermaid-diagrams` on major feature/system completion |
 | **Add feature to existing app** | 1. `/brainstorming` → explore requirements 2. Find skill in `.ai/skills/README.md` 3. `/writing-plans` if multi-step 4. `/frontend-design` for game-facing UI 5. Reference `.ai/examples/` 6. Test (see Testing Protocol) |
 | **Step-by-step runbook** | `.ai/skills/README.md` — task-to-skill lookup (add route, component, data object, leaderboard, badges, etc.) |
 | **Fix a bug** | Read code → `/systematic-debugging` → fix → test → follow `.ai/templates/workflow.md` |
+| **Review UI quality** | `/web-design-guidelines` for accessibility/UX audit → `/theme-factory` for palette → `/frontend-design` for implementation |
 | **Look up a pattern** | `.ai/guide/decision-tree.md` → `.ai/examples/README.md` |
 | **Pre-deploy** | `.ai/checklists/pre-deploy.md` |
 
@@ -19,7 +22,8 @@
 - **Monorepo**: npm workspaces — `client/`, `server/`, `shared/`
 - **Dev**: `npm run dev` (Vite on :3001 proxied to Express on :3000)
 - **Build**: `npm run build` → `npm start`
-- **Test**: `cd server && npm test` (Jest + ts-jest + supertest)
+- **Test**: `cd server && npm test`
+- **Skills**: `bash scripts/setup-skills.sh` (installs all Claude Code skills for this project) (Jest + ts-jest + supertest)
 
 ## Non-Negotiable Rules
 
@@ -123,6 +127,16 @@ Use `/frontend-design` when building components unique to the app experience —
 - `/frontend-design` adds the experience layer on top: layout composition, animation and motion, color atmosphere, and visual storytelling
 - Prioritize: clear visual hierarchy, rewarding animations on actions, intuitive spatial layout, and age-appropriate theming
 - Every game-facing component should feel like it was designed for *this* game, not pulled from a generic template
+- Use `/theme-factory` to establish a color palette before `/frontend-design` builds the interactive UI on top
+- Use `/web-design-guidelines` to audit accessibility and UX compliance after building
+
+### Animation (client-side)
+
+CSS animations are the base (0 KB). For richer motion, prefer Lottie (~30 KB) for celebrations, achievements, and onboarding. See `.ai/skills/README.md` → Animation & Video Skills for full options.
+
+### Canvas Video Assets (server-side)
+
+Use `/remotion-best-practices` to generate .mp4 videos server-side → upload as Topia video assets on canvas. Use cases: NPC storytelling, environmental effects, spatially activated content. See `.ai/skills/README.md` → Server-Side Video Generation.
 
 ## Testing Protocol
 
@@ -143,9 +157,10 @@ Testing is **required**, not optional. Run tests before and after every change.
 - Source imports use `.js` suffix (ESM); Jest strips `.js` for relative paths only
 - Run: `cd server && npm test`
 
-### Frontend Verification (webapp-testing)
+### Frontend Verification (webapp-testing + agent-browser)
 
-- Use `/webapp-testing` to verify frontend flows after major UI changes
+- Use `/webapp-testing` for structured, repeatable Playwright test scripts with assertions
+- Use `/agent-browser` for interactive development-time QA: network inspection (`network requests --filter api`), device emulation (`set device "iPhone 14"`), error monitoring (`errors`), and console capture (`console`)
 - Confirm pages render, user interactions work, and no console errors
 - Especially important for multi-component features (leaderboards, admin panels, forms)
 
