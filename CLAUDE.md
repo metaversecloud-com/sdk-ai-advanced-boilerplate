@@ -1,298 +1,150 @@
 # Claude Development Guidelines
 
-This document provides Claude-specific guidelines for working with this Topia SDK React + TypeScript template repository.
+## Quick Start — What Are You Doing?
+
+| Task | Workflow |
+|------|---------|
+| **New app from boilerplate** | 1. Create PRD → `.ai/templates/prd/` 2. Follow `.ai/checklists/new-app.md` 3. Build with `.ai/guide/` phases |
+| **Add feature to existing app** | 1. Follow `.ai/checklists/new-feature.md` 2. Check `.ai/guide/decision-tree.md` 3. Reference `.ai/examples/` |
+| **Fix a bug** | Read code → fix → test → follow `.ai/templates/workflow.md` |
+| **Look up a pattern** | `.ai/guide/decision-tree.md` → `.ai/examples/README.md` |
+| **Pre-deploy** | `.ai/checklists/pre-deploy.md` |
 
 ## Project Context
 
-- **Stack**: React + TypeScript (client), Node + Express (server)
-- **SDK**: JavaScript RTSDK – Topia Client Library (@rtsdk/topia)
-- **SDK Documentation**: https://metaversecloud-com.github.io/mc-sdk-js/index.html
-- **Baseline Repository**: https://github.com/metaversecloud-com/sdk-ai-boilerplate
+- **App**: Lunch Swap — Topia SDK interactive app (React + TypeScript client, Node + Express server)
+- **SDK**: `@rtsdk/topia` (v0.17.7) — [SDK Docs](https://metaversecloud-com.github.io/mc-sdk-js/index.html)
+- **Monorepo**: npm workspaces — `client/`, `server/`, `shared/`
+- **Dev**: `npm run dev` (Vite on :3001 proxied to Express on :3000)
+- **Build**: `npm run build` → `npm start`
+- **Test**: `cd server && npm test` (Jest + ts-jest + supertest)
 
-## Core Development Rules
+## Non-Negotiable Rules
 
-### File Modification Restrictions
+### Protected Files — DO NOT MODIFY
 
-**DO NOT MODIFY these protected files:**
-
-- `client/App.tsx`
+- `client/src/App.tsx`
 - `client/src/components/PageContainer.tsx`
-- `client/backendAPI.ts`
-- `client/setErrorMessage.ts`
-- `server/getCredentials.ts`
-- `server/errorHandler.ts`
+- `client/src/utils/backendAPI.ts`
+- `client/src/utils/setErrorMessage.ts`
+- `server/utils/getCredentials.ts`
+- `server/utils/errorHandler.ts`
 
-**REQUIRED FILES:**
+### Server-First Architecture
 
-- `client/topiaInit.ts` MUST exist (may adjust exports if needed)
-
-### Architecture & Data Flow
-
-1. **Server-First Architecture**: All SDK calls happen in server routes/controllers or server/utils - NEVER directly from React
-2. **API Flow**: UI → `client/backendAPI.ts` (unchangeable) → server routes/controllers → Topia SDK
-3. **New Client Behavior**: Expose new server routes; do NOT bypass `backendAPI.ts`
-4. **Follow Existing Patterns**: Use patterns in existing client files for pages, components, and server calls
-
-### SDK Usage Guidelines
-
-#### Initialization
-
-- Initialize Topia ONCE on the server with environment variables:
-  - `API_KEY`, `INTERACTIVE_KEY`, `INTERACTIVE_SECRET`
-  - `INSTANCE_DOMAIN=api.topia.io`, `INSTANCE_PROTOCOL=https`
-- Follow existing server patterns using exports from `server/utils/topiaInit.ts`
-
-#### Error Handling
-
-- Wrap all SDK calls in try/catch blocks
-- Either return JSON `{ success: boolean, ... }` or throw and let `server/errorHandler.ts` handle it
-- Follow existing controller patterns for error handling
-
-#### Data Objects Pattern
-
-World/Visitor/User/DroppedAsset classes provide these methods:
-
-- `fetchDataObject` - Get current data
-- `setDataObject` - Set initial/complete data
-- `updateDataObject` - Update partial data
-- `incrementDataObjectValue` - Increment numeric values
-
-**CRITICAL**: Always ensure defaults before calling `updateDataObject`:
-
-1. Check if data object exists
-2. If missing properties, call `setDataObject` with default shape
-3. Then safely use `updateDataObject`
-
-Follow the pattern: `handleGetGameState.ts` → `getDroppedAsset` → `initializeDroppedAssetDataObject`
-
-#### Analytics Integration
-
-All data object methods accept optional `analytics` array:
-
-```typescript
-await visitor.setDataObject(
-  { hello: "world" },
-  { analytics: [{ analyticName: "starts" }], lock: { lockId, releaseLock: true } },
-);
-
-await visitor.updateDataObject(
-  {},
-  { analytics: [{ analyticName: "emotesUnlocked", profileId, uniqueKey: profileId, urlSlug }] },
-);
-
-await visitor.incrementDataObjectValue(`completions`, 1, {
-  analytics: [{ analyticName: "completions", incrementBy: 2, profileId, uniqueKey: profileId, urlSlug }],
-});
+```
+UI → backendAPI.ts (DO NOT CHANGE) → server/routes.ts → controllers → Topia SDK
 ```
 
-### Inventory Cache Pattern
+- All SDK calls happen server-side — NEVER from React
+- New client behavior = new server routes accessed via `backendAPI`
+- Never bypass `backendAPI.ts`
 
-When your app needs to access ecosystem inventory items (badges, decorations, etc.), implement the inventory cache pattern to reduce API calls:
+### Required File
 
-```typescript
-// server/utils/inventoryCache.ts
-import { getCachedInventoryItems } from "./inventoryCache.js";
+`server/utils/topiaInit.ts` MUST exist — exports `Asset`, `DroppedAsset`, `User`, `Visitor`, `World`.
 
-// Get all cached items (24-hour TTL)
-const items = await getCachedInventoryItems({ credentials });
+## Architecture Reference
 
-// Filter for badges
-const badges = items.filter((item) => item.type === "BADGE" && item.status === "ACTIVE");
+### Credentials Flow
 
-// Award a badge to visitor
-const badge = items.find((item) => item.name === "Winner Badge");
-await visitor.grantInventoryItem(badge, 1);
-```
+URL query params → `App.tsx` extracts → `backendAPI` interceptor attaches → `getCredentials(req.query)` validates on server.
 
-**Key Features:**
+### Client State
 
-- 24-hour cache TTL reduces API calls
-- Stale cache fallback on API failure
-- `forceRefresh: true` option for immediate refresh
-- See `.ai/examples/inventoryCache.md` for full implementation
+GlobalContext with reducer. Actions: `SET_HAS_INTERACTIVE_PARAMS`, `SET_GAME_STATE`, `SET_ERROR`. State: `{ isAdmin, error, hasInteractiveParams, visitorData, droppedAsset }`.
 
-### Response Schema (Controllers)
+### Path Aliases
 
-- **Success**: `{ success: true, data?: any }`
-- **Failure**: `{ success: false, error: string }` (handled by errorHandler.ts)
-- **HTTP Codes**: 200 (success), 204 (no body), 4xx (validation), 5xx (SDK/server)
+`@/*` → `src/*`, `@components/*`, `@context/*`, `@pages/*`, `@utils/*`, `@shared/*` → `../shared/*`
 
-## Styling Requirements
+### Current Routes
 
-### SDK CSS Classes (REQUIRED)
+| Method | Path | Controller |
+|--------|------|-----------|
+| GET | `/api/` | Health check |
+| GET | `/api/system/health` | System status |
+| GET | `/api/game-state` | `handleGetGameState` |
 
-**MUST use SDK CSS classes from**: https://sdk-style.s3.amazonaws.com/styles-3.0.2.css
+## Key Patterns (Quick Reference)
 
-#### Typography
+| Pattern | Guide Phase | Example |
+|---------|------------|---------|
+| Data object init (fetch → check → set → update) | Phase 3 | `.ai/examples/data-object-init.md` |
+| Locking (time-bucketed lockId) | Phase 3 | `.ai/examples/locking-strategies.md` |
+| Controller template (try/catch + errorHandler) | Phase 2 | `.ai/templates/controller.md` |
+| Admin permission guard | Phase 2 | `.ai/examples/admin-permission-guard.md` |
+| Analytics (piggyback on data object calls) | Phase 5 | `.ai/guide/05-analytics.md` |
+| Inventory cache (24h TTL) | Phase 6 | `.ai/examples/inventory-cache.md` |
+| Badges & expressions | Phase 6 | `.ai/examples/badges.md` |
+| Leaderboard (pipe-delimited) | Phase 4 | `.ai/examples/leaderboard.md` |
+| Input sanitization | Phase 2 | `.ai/examples/input-sanitization.md` |
 
-```tsx
-<h1 className="h1">Heading 1</h1>
-<h2 className="h2">Heading 2</h2>
-<p className="p1">Standard body text</p>
-<p className="p2">Medium body text</p>
-```
+## Controller Template
 
-#### Buttons
+```ts
+import { Request, Response } from "express";
+import { errorHandler, getCredentials, Visitor, World } from "../utils/index.js";
 
-```tsx
-<button className="btn">Primary Action</button>
-<button className="btn btn-outline">Secondary Action</button>
-<button className="btn btn-text">Text Button</button>
-<button className="btn btn-danger">Error Button</button>
-```
-
-#### Cards
-
-```tsx
-<div className="card">
-  <div className="card-image">
-    <img src="image-url.jpg" alt="Description" />
-  </div>
-  <div className="card-details">
-    <h3 className="card-title">Title</h3>
-    <p className="card-description p2">Description</p>
-    <div className="card-actions">
-      <button className="btn btn-icon">
-        <img src="https://sdk-style.s3.amazonaws.com/icons/edit.svg" />
-      </button>
-    </div>
-  </div>
-</div>
-```
-
-#### Form Elements
-
-```tsx
-<label className="label">Text Input</label>
-<input className="input" type="text" placeholder="placeholder" />
-
-<label className="label">
-  <input className="input-checkbox" type="checkbox" />
-  Checkbox Label
-</label>
-```
-
-### Styling Rules
-
-- **SDK Classes First**: Always use SDK classes before considering alternatives
-- **No Tailwind**: Only use Tailwind when no SDK class exists
-- **No Inline Styles**: Except for dynamic positioning that cannot be handled via classes
-- **Consistent Structure**: Follow component patterns in `.ai/examples/`
-
-### Component Structure Pattern
-
-```tsx
-// Imports grouped by type
-import { useContext, useState } from "react";
-
-// components (using aliased imports)
-import { PageContainer } from "@/components";
-
-// context
-import { GlobalDispatchContext, GlobalStateContext } from "@/context/GlobalContext";
-import { ErrorType } from "@/context/types";
-
-// utils
-import { backendAPI, setErrorMessage } from "@/utils";
-
-interface ComponentProps {
-  // Props definition
-}
-
-export const ComponentName = ({ prop1, prop2 }: ComponentProps) => {
-  // Global context access
-  const dispatch = useContext(GlobalDispatchContext);
-
-  // Local state
-  const [localState, setLocalState] = useState(initialValue);
-
-  // Event handlers with proper error handling
-  const handleEvent = async () => {
-    try {
-      // Implementation using SDK classes
-    } catch (err) {
-      setErrorMessage(dispatch, err as ErrorType);
-    }
-  };
-
-  return (
-    <div className="container">
-      <h2 className="h2">Title</h2>
-      <div className="card">{/* Content using SDK classes */}</div>
-    </div>
-  );
+export const handleExample = async (req: Request, res: Response) => {
+  try {
+    const credentials = getCredentials(req.query);
+    // ... SDK calls ...
+    return res.json({ success: true, data });
+  } catch (error) {
+    return errorHandler({ error, functionName: "handleExample", message: "Error description", req, res });
+  }
 };
-
-export default ComponentName;
 ```
 
-## Testing Requirements (Jest)
+## Styling
 
-- Add tests under `server/__tests__/` for each new/changed route
-- Map `@rtsdk/topia` to `server/mocks/@rtsdk/topia.ts`
-- Assert: HTTP status, JSON schema, correct SDK method & args, credentials flow
+**MUST use SDK CSS classes** from `styles-3.0.2.css`. See `.ai/style-guide.md` for full reference.
 
-## Environment Setup
+- `h1`/`h2`/`p1`/`p2` for typography
+- `btn`/`btn-outline`/`btn-text`/`btn-danger` for buttons
+- `card`/`card-details`/`card-title`/`card-actions` for cards
+- `input`/`label`/`input-checkbox` for forms
+- `container` for layout
+- No Tailwind where SDK classes exist. No inline styles except dynamic positioning.
 
-Provide `.env.example` with:
+Component structure: see `.ai/templates/component.tsx`
 
-```
-API_KEY=your_api_key_here
-INTERACTIVE_KEY=your_interactive_key_here
-INTERACTIVE_SECRET=your_interactive_secret_here
-INSTANCE_DOMAIN=api.topia.io
-INSTANCE_PROTOCOL=https
-```
+## Testing
 
-## Implementation Workflow
+- Add tests in `server/tests/` for each route
+- Mock SDK with `server/mocks/@rtsdk/topia.ts`
+- Assert: HTTP status, JSON schema, SDK method calls, credentials flow
+- Source imports use `.js` suffix (ESM); Jest strips `.js` for relative paths only
 
-1. **PLAN FIRST** - Output concise plan before coding:
+## Environment
 
-   - File tree delta
-   - Endpoint signatures
-   - Data shapes (TS interfaces)
-   - Styling requirements
-
-2. **IMPLEMENT** - Minimal changes satisfying constraints & tests
-
-3. **TEST** - Add/adjust Jest tests with SDK mock coverage
-
-4. **VALIDATE STYLING** - Verify components follow style guide
-
-5. **EXPLAIN** - Provide deliverable format output
-
-## Deliverable Format
-
-When implementing changes, return:
-
-1. **Affected Files** (paths)
-2. **Diffs or Full New Files**
-3. **Short Rationale**
-4. **Test Updates**
-5. **Styling Validation Report** (for client components)
-6. **Run Steps**
+`.env` requires: `INTERACTIVE_KEY`, `INTERACTIVE_SECRET`, `INSTANCE_DOMAIN=api.topia.io`, `INSTANCE_PROTOCOL=https`
 
 ## When Blocked
 
-If SDK calls or inputs are unclear:
+1. STOP — propose minimal stub
+2. List assumptions
+3. Ask 1 concise question
+4. If no answer, proceed with safest assumption and mark TODOs
+5. Never invent SDK methods — use only documented APIs
 
-- STOP, propose minimal stub
-- List assumptions
-- Ask 1 concise question
-- If no answer, proceed with safest assumption and mark TODOs
+## Documentation Map
 
-## Key References
+| Resource | Location |
+|----------|----------|
+| Full SDK API reference | `.ai/apps/sdk-reference.md` |
+| Implementation guide (7 phases) | `.ai/guide/` |
+| Decision tree ("I want to do X") | `.ai/guide/decision-tree.md` |
+| 34 code examples | `.ai/examples/README.md` |
+| PRD template | `.ai/templates/prd/` |
+| Controller template | `.ai/templates/controller.md` |
+| Data object schema template | `.ai/templates/data-object-schema.md` |
+| Component template | `.ai/templates/component.tsx` |
+| Workflow & deliverable format | `.ai/templates/workflow.md` |
+| CSS class reference | `.ai/style-guide.md` |
+| Base rules (detailed) | `.ai/rules.md` |
+| Checklists | `.ai/checklists/` |
+| 12 production app analyses | `.ai/apps/` |
 
-- **SDK Documentation**: https://metaversecloud-com.github.io/mc-sdk-js/index.html
-- **Style Guide**: `.ai/style-guide.md`
-- **Examples**: `.ai/examples/` directory
-- **Planning Template**: `.ai/templates/plan.md`
-- **Base Rules**: `.ai/rules.md`
-
-### Common Patterns
-
-- **Inventory Cache**: See `.ai/examples/inventoryCache.md` for caching ecosystem inventory items (badges, decorations, etc.)
-- **Data Objects**: See `.ai/examples/handleGetConfiguration.md` for data object initialization patterns
-- **Dropped Assets**: See `.ai/examples/handleDropAssets.md`, `.ai/examples/handleUpdateDroppedAsset.md`, and `.ai/examples/handleRemoveDroppedAsset.md` for asset management
-
-Always reference the comprehensive documentation in the `.ai/` folder for detailed examples and patterns before starting implementation.
+Always reference `.ai/` documentation before starting implementation.
