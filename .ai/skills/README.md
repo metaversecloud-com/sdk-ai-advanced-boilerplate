@@ -58,6 +58,7 @@ Or install individually with `npx skills add <package>`:
 | **web-design-guidelines** | `npx skills add @anthropic/web-design-guidelines` | Audit UI for accessibility, UX, and Web Interface Guidelines compliance. Complements `/frontend-design` with standards review. |
 | **agent-browser** | `npx skills add @anthropic/agent-browser` | Interactive browser QA with ref-based selectors, network inspection, device emulation, and error monitoring. Complements `/webapp-testing` for development-time verification. |
 | **theme-factory** | `npx skills add @anthropic/theme-factory` | Apply cohesive color palettes and font pairings. Use as a starting point before `/frontend-design` to establish a color foundation for game UI. |
+| **accessibility-compliance** | `npx skills add @anthropic/accessibility-compliance` | WCAG 2.2 compliance, ARIA patterns, mobile accessibility, inclusive design. **Required** — all UI must target WCAG 2.2 AA. |
 
 ## Animation & Video Skills
 

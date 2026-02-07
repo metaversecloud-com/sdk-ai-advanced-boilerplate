@@ -46,6 +46,17 @@ UI → backendAPI.ts (DO NOT CHANGE) → server/routes.ts → controllers → To
 - New client behavior = new server routes accessed via `backendAPI`
 - Never bypass `backendAPI.ts`
 
+### Accessibility — WCAG 2.2 AA Required
+
+All UI must target **WCAG 2.2 AA** compliance. Use `/accessibility-compliance` when building or reviewing components. This is especially important given the young audience (ages 7–17) — inclusive design is non-negotiable.
+
+- Semantic HTML, proper heading hierarchy, ARIA labels
+- Keyboard navigable, focus visible, no keyboard traps
+- Color contrast ratios meet AA minimums (4.5:1 text, 3:1 large text/UI)
+- Touch targets minimum 44x44px for mobile
+- Reduced motion support (`prefers-reduced-motion`)
+- Screen reader tested for interactive elements
+
 ### Required File
 
 `server/utils/topiaInit.ts` MUST exist — exports `Asset`, `DroppedAsset`, `User`, `Visitor`, `World`.
