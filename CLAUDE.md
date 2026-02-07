@@ -261,6 +261,7 @@ Run `npm run setup` to configure `.env` interactively. In dev mode with `API_KEY
 | CSS class reference | `.ai/style-guide.md` |
 | Base rules (detailed) | `.ai/rules.md` |
 | Checklists | `.ai/checklists/` |
+| SDK compatibility fix log | `.ai/checklists/sdk-compatibility-log.md` |
 | 12 production app analyses | `.ai/apps/` |
 | App analysis tracker | `.ai/apps/tracker.md` |
 
