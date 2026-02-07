@@ -87,6 +87,27 @@ All UI must target **WCAG 2.2 AA** compliance. Use `/accessibility-compliance` w
 - Reduced motion support (`prefers-reduced-motion`)
 - Screen reader tested for interactive elements
 
+### Mandatory Workflow — Brainstorm Before You Build
+
+**When the user describes a new app idea, game concept, or feature**, you MUST invoke `/brainstorming` BEFORE planning or writing any code. Do NOT skip this step. Do NOT jump to `/writing-plans` or implementation.
+
+The required sequence is:
+1. **`/brainstorming`** — Explore the user's intent, ask clarifying questions, surface SDK capabilities, and shape the idea collaboratively. This is where creativity happens.
+2. **`/writing-plans`** — Only after brainstorming is complete and the user is aligned on what to build, create the implementation plan.
+3. **Build** — Only after the plan is approved, begin implementation.
+
+This applies to:
+- "I want to build a ___" → `/brainstorming` first
+- "Here's my app idea: ___" → `/brainstorming` first
+- "Let's make a game where ___" → `/brainstorming` first
+- "Add a feature that ___" → `/brainstorming` first
+- Any new creative work, feature, or behavior change → `/brainstorming` first
+
+The only exceptions are:
+- Bug fixes (use `/systematic-debugging`)
+- Trivial changes with no design decisions (rename a variable, fix a typo)
+- The user explicitly says "skip brainstorming" or "just build it"
+
 ### Required File
 
 `server/utils/topiaInit.ts` MUST exist — exports `Asset`, `DroppedAsset`, `User`, `Visitor`, `World`.

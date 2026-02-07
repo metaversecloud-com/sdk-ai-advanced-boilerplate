@@ -126,6 +126,7 @@ Validation: Before submitting any implementation, verify that all components fol
 
 WORKFLOW
 
+0. BRAINSTORM FIRST — When the user describes a new app idea, game concept, or feature, you MUST invoke `/brainstorming` BEFORE planning or writing code. Do NOT skip this step. Only proceed to planning after brainstorming is complete and the user is aligned on what to build. Exceptions: bug fixes, trivial changes, or user explicitly says "skip brainstorming."
 1. PLAN FIRST — output a concise plan BEFORE writing code:
    - file tree delta
    - endpoint signatures
