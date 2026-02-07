@@ -286,3 +286,7 @@ if (sceneData.profiles) {
   await keyAsset.updateDataObject({ leaderboard });
 }
 ```
+
+## Related Skills
+
+- [Add Leaderboard](../skills/add-leaderboard.md) — Step-by-step runbook for implementing a full leaderboard

@@ -4,6 +4,7 @@
 > **SDK Methods**: `visitor.grantExpression()`, `visitor.grantExpressionByName()`
 > **Guide Phase**: Phase 6
 > **Difficulty**: Intermediate
+> **Tags**: `emote, expression, cosmetic, reward, unlock, animation`
 
 ## When to Use
 

@@ -4,6 +4,7 @@
 > **SDK Methods**: `setDataObject()`, `updateDataObject()`, `incrementDataObjectValue()`
 > **Guide Phase**: Phase 3
 > **Difficulty**: Intermediate
+> **Tags**: `lock, race-condition, concurrency, atomic, time-bucket, mutex, safe-write`
 
 ## When to Use
 

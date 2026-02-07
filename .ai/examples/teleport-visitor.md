@@ -4,6 +4,7 @@
 > **SDK Methods**: `visitor.moveVisitor({ shouldTeleportVisitor: true, x, y })`
 > **Guide Phase**: Phase 7
 > **Difficulty**: Starter
+> **Tags**: `move, teleport, position, coordinates, transport, moveVisitor`
 
 ## When to Use
 

@@ -4,6 +4,7 @@
 > **SDK Methods**: `visitor.triggerParticle({ name, duration })`, `world.triggerParticle({ name, duration, position })`
 > **Guide Phase**: Phase 7
 > **Difficulty**: Starter
+> **Tags**: `visual, effect, celebration, sparkle, smoke, trophy, hearts, animation, feedback`
 
 ## When to Use
 
@@ -160,21 +161,87 @@ export const handleLevelUp = async (
 
 ## Known Particle Names
 
-These particle names have been used across SDK apps:
+### Complete Reference (16 known particles)
 
-| Particle Name | Visual Description | Common Use Case | Source App |
-|--------------|-------------------|----------------|------------|
-| `"sleep_float"` | Floating Z's | Pet sleeping/resting | virtual-pet |
-| `"guitar_float"` | Floating music notes | Playing music action | virtual-pet |
-| `"redHeart_float"` | Floating red hearts | Love/affection action | virtual-pet |
-| `"pawPrint_float"` | Floating paw prints | Pet walking/exploring | virtual-pet |
-| `"medal_float"` | Floating medals | Level up / achievement | virtual-pet |
-| `"whiteStar_burst"` | Bursting white stars | Expression grant / unlock | sdk-quest |
-| `"explosion_float"` | Floating explosion | Task completion | sdk-scavenger-hunt |
-| `"partyPopper_float"` | Floating party poppers | Celebration / game won | sdk-scavenger-hunt |
-| `"trophy_float"` | Floating trophies | Achievement / first place | sdk-quest |
-| `"disco_float"` | Floating disco balls | Discovery / found item | sdk-scavenger-hunt |
-| `"Sparkle"` | Sparkle effect | General highlight | lunch-swap |
+These particle names have been confirmed across production SDK apps. Names are **case-sensitive** and must be passed exactly as shown.
+
+#### Float Particles (follow an animation path, drift upward)
+
+| Particle Name | Visual Description | Common Use Cases | Source Apps |
+|--------------|-------------------|-----------------|------------|
+| `"sleep_float"` | Floating Z's | Pet sleeping, resting state | virtual-pet |
+| `"guitar_float"` | Floating music notes | Playing music, entertainment action | virtual-pet |
+| `"redHeart_float"` | Floating red hearts | Love, affection, feeding, pet care | virtual-pet |
+| `"pawPrint_float"` | Floating paw prints | Pet walking, training, exploring | virtual-pet |
+| `"medal_float"` | Floating medals | Level up, achievement unlocked | virtual-pet |
+| `"trophy_float"` | Floating trophies | First place, race completion, top rank | sdk-race, sdk-quest |
+| `"explosion_float"` | Floating explosion | Task completion, item destroyed | sdk-scavenger-hunt |
+| `"partyPopper_float"` | Floating party poppers | Game won, celebration, major milestone | sdk-scavenger-hunt |
+| `"disco_float"` | Floating disco balls | Discovery, found hidden item | sdk-scavenger-hunt |
+
+#### Burst Particles (radiate outward from center)
+
+| Particle Name | Visual Description | Common Use Cases | Source Apps |
+|--------------|-------------------|-----------------|------------|
+| `"whiteStar_burst"` | Bursting white stars | Expression grant, unlock, power-up | sdk-quest, virtual-pet |
+
+#### Puff Particles (smoke/cloud effect)
+
+| Particle Name | Visual Description | Common Use Cases | Source Apps |
+|--------------|-------------------|-----------------|------------|
+| `"blackSmoke_puff"` | Black smoke cloud | Asset deletion, item removal, destruction | Multiple |
+
+#### Sparkle/Effect Particles
+
+| Particle Name | Visual Description | Common Use Cases | Source Apps |
+|--------------|-------------------|-----------------|------------|
+| `"Sparkle"` | Sparkle highlight (capitalized) | Item collection, asset interaction, general highlight | lunch-swap |
+| `"sparkle"` | Sparkle effect (lowercase) | Item collection, general feedback | guide/07-polish |
+| `"level_up_sparkle"` | Extended sparkle effect | Level up visual with longer duration | xp-leveling |
+| `"fireworks"` | Fireworks burst | Celebration, game win | guide/07-polish |
+| `"confetti"` | Falling confetti | Badge awarded, milestone reached | guide/07-polish |
+
+### Naming Convention
+
+Particle names follow these patterns:
+- **`{icon}_float`** — animated icon that drifts upward (most common, 9 variants)
+- **`{icon}_burst`** — radial burst from center point (1 known variant)
+- **`{icon}_puff`** — smoke/cloud expansion (1 known variant)
+- **Single word** — generic effects without suffix (`Sparkle`, `fireworks`, `confetti`)
+
+### Choosing a Particle
+
+| Scenario | Recommended Particle | Duration |
+|----------|---------------------|----------|
+| Achievement / badge earned | `"medal_float"` or `"trophy_float"` | 3-5s |
+| Level up | `"level_up_sparkle"` or `"medal_float"` | 3-5s |
+| Item collected / discovered | `"disco_float"` or `"Sparkle"` | 3s |
+| Game completed / won | `"partyPopper_float"` or `"fireworks"` | 5s |
+| Asset removed / destroyed | `"blackSmoke_puff"` or `"explosion_float"` | 3-5s |
+| Pet care / affection | `"redHeart_float"` | 3s |
+| Expression / emote unlocked | `"whiteStar_burst"` | 3s |
+| General positive feedback | `"Sparkle"` or `"confetti"` | 3s |
+| Resting / idle state | `"sleep_float"` | 3-5s |
+
+### API Reference
+
+```ts
+// Visitor particle (follows avatar)
+await visitor.triggerParticle({
+  name: "redHeart_float",  // Required: exact particle name string
+  duration: 3,              // Required: seconds (recommended 2-5)
+});
+
+// World particle (fixed position)
+await world.triggerParticle({
+  name: "blackSmoke_puff",  // Required: exact particle name string
+  duration: 3,               // Required: seconds
+  position: {                // Required for world particles
+    x: 100,
+    y: 200,
+  },
+});
+```
 
 ## Client Implementation
 

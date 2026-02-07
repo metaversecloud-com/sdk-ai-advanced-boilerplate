@@ -4,6 +4,7 @@
 > **SDK Methods**: `visitor.updateDataObject()`, `visitor.triggerParticle()`, `visitor.fireToast()`
 > **Guide Phase**: Phase 3
 > **Difficulty**: Intermediate
+> **Tags**: `experience, XP, level, progression, rank, curve, threshold, level-up, milestone`
 
 ## When to Use
 
@@ -385,3 +386,7 @@ export const XpProgressBar = () => {
 - [Leaderboard](./leaderboard.md) -- displaying XP-based rankings
 - [Action Cooldowns](./action-cooldowns.md) -- rate-limiting XP-granting actions
 - [Probability Rewards](./probability-rewards.md) -- randomizing XP amounts from actions
+
+## Related Skills
+
+- [Add Game Mechanic](../skills/add-game-mechanic.md) — Step-by-step runbook for implementing XP, cooldowns, and streaks

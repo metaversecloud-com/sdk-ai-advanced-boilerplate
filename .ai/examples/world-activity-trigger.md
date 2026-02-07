@@ -4,6 +4,7 @@
 > **SDK Methods**: `World.triggerWorldActivity()`, `world.triggerActivity()`
 > **Guide Phase**: Phase 7
 > **Difficulty**: Starter
+> **Tags**: `activity, signal, platform, event, notification, game-state`
 
 ## When to Use
 

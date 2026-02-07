@@ -4,6 +4,7 @@
 > **SDK Methods**: `DroppedAsset.fetchDataObject()`, `Visitor.get()`
 > **Guide Phase**: Phase 2
 > **Difficulty**: Intermediate
+> **Tags**: `owner, viewer, permission, ownership, profile, access-control, pet`
 
 ## When to Use
 

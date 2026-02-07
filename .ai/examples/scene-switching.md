@@ -4,6 +4,7 @@
 > **SDK Methods**: `world.dropScene()`, `World.deleteDroppedAssets()`
 > **Guide Phase**: Phase 2
 > **Difficulty**: Advanced
+> **Tags**: `scene, switch, swap, level, stage, transition, cleanup`
 
 ## When to Use
 

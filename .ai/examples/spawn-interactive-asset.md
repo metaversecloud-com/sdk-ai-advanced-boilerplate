@@ -4,6 +4,7 @@
 > **SDK Methods**: `Asset.create()`, `DroppedAsset.drop()`, `DroppedAssetClickType.LINK`
 > **Guide Phase**: Phase 2
 > **Difficulty**: Intermediate
+> **Tags**: `create, interactive, iframe, click, spawn, dynamic, pet, webhook`
 
 ## When to Use
 

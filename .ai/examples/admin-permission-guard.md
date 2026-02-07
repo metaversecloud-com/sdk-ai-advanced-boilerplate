@@ -4,6 +4,7 @@
 > **SDK Methods**: `Visitor.get()`
 > **Guide Phase**: Phase 2
 > **Difficulty**: Starter
+> **Tags**: `admin, permission, guard, middleware, 403, authorization, restrict, isAdmin`
 
 ## When to Use
 
@@ -216,3 +217,7 @@ export const AdminPanel = () => {
 - [owner-vs-viewer.md](./owner-vs-viewer.md) - Similar permission pattern for entity ownership
 - [input-sanitization.md](./input-sanitization.md) - Always sanitize admin inputs too
 - [handleGetGameState.md](./handleGetGameState.md) - Example of returning `isAdmin` in game state response
+
+## Related Skills
+
+- [Add Admin Feature](../skills/add-admin-feature.md) — Step-by-step runbook for adding admin-only functionality

@@ -7,7 +7,8 @@ Master navigation hub for all AI assistant documentation for building Topia SDK 
 | Task | Start Here |
 |------|-----------|
 | **Building a new app** | `checklists/new-app.md` → `templates/prd/` → `guide/` |
-| **Adding a feature** | `checklists/new-feature.md` → `guide/decision-tree.md` |
+| **Adding a feature** | `checklists/new-feature.md` → `skills/README.md` → `guide/decision-tree.md` |
+| **Step-by-step runbook** | `skills/README.md` — task-to-skill lookup table |
 | **Looking up a pattern** | `guide/decision-tree.md` → `examples/README.md` |
 | **Pre-deploy check** | `checklists/pre-deploy.md` |
 | **SDK API reference** | `apps/sdk-reference.md` |
@@ -46,6 +47,19 @@ Master navigation hub for all AI assistant documentation for building Topia SDK 
 │   ├── plan.md                  Implementation plan template
 │   ├── workflow.md              Workflow steps & deliverable format
 │   └── prompts.md               Ideal prompts for SDK features
+│
+├── skills/                      Step-by-step runbooks (11 files)
+│   ├── README.md                Task-to-skill lookup table
+│   ├── add-route.md             Add server route + controller
+│   ├── add-component.md         Add client page or component
+│   ├── add-data-object.md       Design and implement data object
+│   ├── add-leaderboard.md       Implement leaderboard (composes foundations)
+│   ├── add-badges.md            Implement badges/achievements
+│   ├── add-game-mechanic.md     Add XP, cooldowns, streaks
+│   ├── add-analytics.md         Add analytics tracking
+│   ├── add-admin-feature.md     Add admin-only functionality
+│   ├── write-tests.md           Add test coverage for a route
+│   └── debug-sdk.md             Troubleshoot common SDK issues
 │
 ├── examples/                    34 copy-paste code examples
 │   ├── README.md                Categorized index

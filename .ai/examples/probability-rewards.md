@@ -4,6 +4,7 @@
 > **SDK Methods**: `visitor.updateDataObject()`, `visitor.incrementDataObjectValue()`
 > **Guide Phase**: Phase 3
 > **Difficulty**: Intermediate
+> **Tags**: `random, chance, drop-rate, luck, reward, RNG, loot, weight`
 
 ## When to Use
 

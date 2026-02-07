@@ -4,6 +4,7 @@
 > **SDK Methods**: N/A (client-side only)
 > **Guide Phase**: Phase 7
 > **Difficulty**: Starter
+> **Tags**: `audio, sound, music, client-side, play, feedback, SFX`
 
 ## When to Use
 

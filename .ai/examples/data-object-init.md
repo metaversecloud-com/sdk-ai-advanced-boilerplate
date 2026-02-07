@@ -4,6 +4,7 @@
 > **SDK Methods**: `fetchDataObject()`, `setDataObject()`, `updateDataObject()`
 > **Guide Phase**: Phase 3
 > **Difficulty**: Starter
+> **Tags**: `initialize, setup, defaults, fetch-check-set, lock, race-condition, data-object`
 
 ## When to Use
 
@@ -353,3 +354,7 @@ await entity.setDataObject(defaults, { lock: { lockId, releaseLock: true } });
 - [get-configuration.md](./get-configuration.md) - World data object initialization with theme configuration
 - [reset-game-state.md](./reset-game-state.md) - Resetting data objects with admin verification
 - [leaderboard.md](./leaderboard.md) - Storing and updating leaderboard data in data objects
+
+## Related Skills
+
+- [Add Data Object](../skills/add-data-object.md) — Step-by-step runbook for designing and implementing data objects

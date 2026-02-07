@@ -4,6 +4,7 @@
 > **SDK Methods**: N/A (pure utility)
 > **Guide Phase**: Phase 2
 > **Difficulty**: Starter
+> **Tags**: `sanitize, validate, XSS, security, escape, clean, user-input`
 
 ## When to Use
 

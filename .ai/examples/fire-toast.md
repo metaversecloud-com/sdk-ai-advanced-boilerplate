@@ -4,6 +4,7 @@
 > **SDK Methods**: `visitor.fireToast({ groupId, title, text })`, `world.fireToast({ groupId, title, text })`
 > **Guide Phase**: Phase 7
 > **Difficulty**: Starter
+> **Tags**: `notification, toast, message, alert, popup, feedback, groupId`
 
 ## When to Use
 

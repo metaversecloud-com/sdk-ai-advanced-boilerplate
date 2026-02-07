@@ -4,6 +4,7 @@
 > **SDK Methods**: `droppedAsset.updatePosition(x, y)`, `droppedAsset.updateClickType()`
 > **Guide Phase**: Phase 2
 > **Difficulty**: Starter
+> **Tags**: `move, position, reposition, coordinates, drag, updatePosition`
 
 ## When to Use
 

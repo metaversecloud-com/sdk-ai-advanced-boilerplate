@@ -322,3 +322,7 @@ items.filter((item) => item.metadata?.category === "rare");
 - All requests share the same cache (singleton pattern)
 - The 24-hour TTL balances freshness with API efficiency
 - Stale cache fallback ensures graceful degradation during API issues
+
+## Related Skills
+
+- [Add Badges](../skills/add-badges.md) — Step-by-step runbook that uses inventory cache as a foundation

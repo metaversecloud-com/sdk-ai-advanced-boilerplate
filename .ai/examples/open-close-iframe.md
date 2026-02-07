@@ -4,6 +4,7 @@
 > **SDK Methods**: `visitor.openIframe({ droppedAssetId, link, shouldOpenInDrawer, title })`, `visitor.closeIframe(assetId)`
 > **Guide Phase**: Phase 7
 > **Difficulty**: Starter
+> **Tags**: `iframe, drawer, popup, open, close, UI, modal, panel`
 
 ## When to Use
 

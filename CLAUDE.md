@@ -5,7 +5,8 @@
 | Task | Workflow |
 |------|---------|
 | **New app from boilerplate** | 1. Create PRD → `.ai/templates/prd/` 2. Follow `.ai/checklists/new-app.md` 3. Build with `.ai/guide/` phases |
-| **Add feature to existing app** | 1. Follow `.ai/checklists/new-feature.md` 2. Check `.ai/guide/decision-tree.md` 3. Reference `.ai/examples/` |
+| **Add feature to existing app** | 1. Find skill in `.ai/skills/README.md` 2. Follow step-by-step runbook 3. Reference `.ai/examples/` |
+| **Step-by-step runbook** | `.ai/skills/README.md` — task-to-skill lookup (add route, component, data object, leaderboard, badges, etc.) |
 | **Fix a bug** | Read code → fix → test → follow `.ai/templates/workflow.md` |
 | **Look up a pattern** | `.ai/guide/decision-tree.md` → `.ai/examples/README.md` |
 | **Pre-deploy** | `.ai/checklists/pre-deploy.md` |
@@ -136,6 +137,7 @@ Component structure: see `.ai/templates/component.tsx`
 | Full SDK API reference | `.ai/apps/sdk-reference.md` |
 | Implementation guide (7 phases) | `.ai/guide/` |
 | Decision tree ("I want to do X") | `.ai/guide/decision-tree.md` |
+| Step-by-step skills (11 runbooks) | `.ai/skills/README.md` |
 | 34 code examples | `.ai/examples/README.md` |
 | PRD template | `.ai/templates/prd/` |
 | Controller template | `.ai/templates/controller.md` |
@@ -148,3 +150,44 @@ Component structure: see `.ai/templates/component.tsx`
 | 12 production app analyses | `.ai/apps/` |
 
 Always reference `.ai/` documentation before starting implementation.
+
+## Contribute Back
+
+**Central repository**: https://github.com/metaversecloud-com/sdk-ai-advanced-boilerplate
+
+The `.ai/` folder in this app is a local copy. The boilerplate repo is the single source of truth for examples, templates, and skills shared across all SDK apps.
+
+### When You Create Something Reusable
+
+When you create a **novel pattern, utility, or workflow** during development that could be reused across apps:
+
+1. **Add locally first** — Add the new file to the appropriate `.ai/` subdirectory in this app:
+   - New code pattern → `.ai/examples/` (header metadata, When to Use, Server/Client Implementation, Variations, Common Mistakes, Related Examples, Related Skills, Tags)
+   - New step-by-step procedure → `.ai/skills/` (header, References, Inputs Needed, Steps with Verify checkpoints, Verification Checklist, Common Mistakes, Next Skills)
+   - New scaffold/boilerplate → `.ai/templates/`
+2. **Update indexes** → Add the new file to `examples/README.md`, `skills/README.md`, or the relevant index, and update cross-references in `CLAUDE.md` and `decision-tree.md`
+3. **PR to the boilerplate repo** → Clone/fork `metaversecloud-com/sdk-ai-advanced-boilerplate`, add the new file(s) to the matching `.ai/` path, update its indexes, and open a pull request. Title format: `Add [type]: [name]` (e.g., `Add example: vote-reversal.md`, `Add skill: add-leaderboard.md`).
+
+Example header format (add to top of every new `.ai/examples/*.md`):
+```
+> **Source**: [app name(s)]
+> **SDK Methods**: [method signatures]
+> **Guide Phase**: Phase N
+> **Difficulty**: Starter | Intermediate | Advanced
+> **Tags**: `keyword1, keyword2, keyword3`
+```
+
+If unsure whether something is reusable, err on the side of adding it — it's easier to remove than to recreate.
+
+### Sync from Boilerplate (Every Few Days)
+
+Periodically pull updates from the central boilerplate repo to keep this app's `.ai/` folder current:
+
+1. **Pull latest** → Fetch the latest `.ai/` contents from `metaversecloud-com/sdk-ai-advanced-boilerplate`
+2. **Diff and merge** → Compare against local `.ai/` folder. Apply new/updated examples, templates, and skills. Preserve any app-specific customizations (e.g., `CLAUDE.md` project context, app-specific routes table).
+3. **Run tests** → `cd server && npm test` — make sure nothing broke
+4. **Review additions** → Check what new examples, skills, or templates were added to the boilerplate. For each:
+   - Does it describe a feature this app could benefit from?
+   - Does the app already have this functionality?
+   - If it's a good fit, consider implementing it using the corresponding skill runbook
+5. **Report** → Summarize what was synced, what's new, and whether any new features are worth adding

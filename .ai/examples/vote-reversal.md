@@ -4,6 +4,7 @@
 > **SDK Methods**: `droppedAsset.updateDataObject()` with lock
 > **Guide Phase**: Phase 3
 > **Difficulty**: Intermediate
+> **Tags**: `vote, poll, toggle, undo, change-vote, selection, lock`
 
 ## When to Use
 

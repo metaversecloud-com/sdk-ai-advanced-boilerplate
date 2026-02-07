@@ -292,3 +292,7 @@ await visitor.fireToast({
 
 - `inventoryCache.md` - Ecosystem inventory caching
 - `awardBadge.md` - Awarding badges to visitors
+
+## Related Skills
+
+- [Add Badges](../skills/add-badges.md) — Step-by-step runbook for implementing a full badges system

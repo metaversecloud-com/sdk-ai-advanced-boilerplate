@@ -4,6 +4,7 @@
 > **SDK Methods**: `visitor.openIframe()`, `visitor.closeIframe()`
 > **Guide Phase**: Phase 7
 > **Difficulty**: Intermediate
+> **Tags**: `webhook, zone, trigger, area, proximity, auto-open, click-type`
 
 ## When to Use
 

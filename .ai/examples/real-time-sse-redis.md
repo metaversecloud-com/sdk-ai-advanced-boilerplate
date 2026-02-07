@@ -4,6 +4,7 @@
 > **SDK Methods**: N/A (pure infrastructure pattern)
 > **Guide Phase**: Phase 7
 > **Difficulty**: Advanced
+> **Tags**: `real-time, SSE, Redis, pub-sub, live-update, streaming, multiplayer`
 
 ## When to Use
 

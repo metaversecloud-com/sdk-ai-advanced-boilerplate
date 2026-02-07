@@ -4,6 +4,7 @@
 > **SDK Methods**: `visitor.updateDataObject()`, `visitor.incrementDataObjectValue()`
 > **Guide Phase**: Phase 3
 > **Difficulty**: Intermediate
+> **Tags**: `daily, limit, streak, consecutive, reset, midnight, UTC, cap, check-in`
 
 ## When to Use
 
@@ -360,3 +361,7 @@ export const DailyStatusDisplay = () => {
 - [XP and Leveling](./xp-leveling.md) -- granting XP on daily actions
 - [Award Badge](./award-badge.md) -- awarding badges for streak milestones
 - [Leaderboard](./leaderboard.md) -- ranking visitors by streak length
+
+## Related Skills
+
+- [Add Game Mechanic](../skills/add-game-mechanic.md) — Step-by-step runbook for implementing XP, cooldowns, and streaks

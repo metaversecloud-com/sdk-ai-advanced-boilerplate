@@ -52,3 +52,7 @@ export const awardBadge = async ({
   }
 };
 ```
+
+## Related Skills
+
+- [Add Badges](../skills/add-badges.md) — Step-by-step runbook for implementing badges end-to-end

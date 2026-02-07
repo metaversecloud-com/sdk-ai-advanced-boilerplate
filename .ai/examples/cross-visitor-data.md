@@ -4,6 +4,7 @@
 > **SDK Methods**: `User.create({ credentials, profileId })`, `user.fetchDataObject()`, `user.fetchInventoryItems()`
 > **Guide Phase**: Phase 3
 > **Difficulty**: Intermediate
+> **Tags**: `user, cross-world, persistent, profile, shared-data, multi-world`
 
 ## When to Use
 

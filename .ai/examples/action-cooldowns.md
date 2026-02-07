@@ -4,6 +4,7 @@
 > **SDK Methods**: `visitor.updateDataObject()` with dot-notation timestamps
 > **Guide Phase**: Phase 3
 > **Difficulty**: Intermediate
+> **Tags**: `cooldown, timer, rate-limit, wait, throttle, timestamp, countdown, pacing`
 
 ## When to Use
 
@@ -385,3 +386,7 @@ export const ActionButton = ({ actionType, label, remainingMs, onSuccess }: Acti
 - [XP and Leveling](./xp-leveling.md) -- granting XP after cooldown-gated actions
 - [Daily Limits and Streaks](./daily-limits-streaks.md) -- combining cooldowns with daily caps
 - [Probability Rewards](./probability-rewards.md) -- randomizing rewards from cooldown-gated actions
+
+## Related Skills
+
+- [Add Game Mechanic](../skills/add-game-mechanic.md) — Step-by-step runbook for implementing XP, cooldowns, and streaks
