@@ -1,7 +1,7 @@
 # Grant Expression (Emote) Rewards
 
 > **Source**: sdk-quest, virtual-pet, sdk-scavenger-hunt
-> **SDK Methods**: `visitor.grantExpression()`, `visitor.grantExpressionByName()`
+> **SDK Methods**: `visitor.grantExpression({ name })`
 > **Guide Phase**: Phase 6
 > **Difficulty**: Intermediate
 > **Tags**: `emote, expression, cosmetic, reward, unlock, animation`
@@ -29,7 +29,7 @@ export const grantExpression = async (
   expressionName: string,
 ): Promise<GrantExpressionResult> => {
   try {
-    await visitor.grantExpressionByName(expressionName);
+    await visitor.grantExpression({ name: expressionName });
     return {
       granted: true,
       alreadyOwned: false,
@@ -61,7 +61,7 @@ export const handleCollectItem = async (req: Request, res: Response) => {
     const credentials = getCredentials(req.query);
     const { visitorId, profileId, urlSlug, uniqueName } = credentials;
 
-    const visitor = await Visitor.create(visitorId, {
+    const visitor = Visitor.create(visitorId, urlSlug, {
       credentials,
     });
 
@@ -138,7 +138,7 @@ export const handleLevelUp = async (req: Request, res: Response) => {
     const { visitorId, profileId, urlSlug } = credentials;
     const { newLevel } = req.body;
 
-    const visitor = await Visitor.create(visitorId, {
+    const visitor = Visitor.create(visitorId, urlSlug, {
       credentials,
     });
 
@@ -210,7 +210,7 @@ export const handleCompleteQuest = async (req: Request, res: Response) => {
     const { visitorId, profileId, urlSlug, uniqueName } = credentials;
     const { questId } = req.body;
 
-    const visitor = await Visitor.create(visitorId, {
+    const visitor = Visitor.create(visitorId, urlSlug, {
       credentials,
     });
 

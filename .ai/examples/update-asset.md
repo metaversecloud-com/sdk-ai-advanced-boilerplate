@@ -49,9 +49,8 @@ export const handleUpdateDroppedAsset = async (
         "",
         "https://www.shutterstock.com/image-vector/colorful-illustration-test-word-260nw-1438324490.jpg",
       ),
-      // Update the location of the dropped asset.
-      // Parameters in order represent x, y and yOrderAdjust
-      droppedAsset.updatePosition(100, 200, 100);
+      // Update the location of the dropped asset (x, y)
+      droppedAsset.updatePosition(100, 200);
     ]);
 
     // Return a successful response with the updated asset details

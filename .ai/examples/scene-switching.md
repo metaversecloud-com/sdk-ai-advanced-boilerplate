@@ -17,7 +17,7 @@ Use this pattern when your app needs to dynamically change the environment by re
 ```ts
 // server/controllers/handleSceneSwitch.ts
 import { Request, Response } from "express";
-import { errorHandler, getCredentials, World, DroppedAsset } from "../utils/index.js";
+import { errorHandler, getCredentials, World, DroppedAsset, Visitor } from "../utils/index.js";
 
 interface SceneConfig {
   sceneId: string;
@@ -36,16 +36,16 @@ export const handleSceneSwitch = async (req: Request, res: Response) => {
     const { assetId, urlSlug, visitorId } = credentials;
 
     // Initialize SDK instances
-    const world = await World.create(urlSlug, {
+    const world = World.create(urlSlug, {
       credentials,
     });
 
-    const droppedAsset = await DroppedAsset.create(assetId, urlSlug, {
+    const droppedAsset = DroppedAsset.create(assetId, urlSlug, {
       credentials,
     });
 
     // Check admin status
-    const visitor = await world.fetchVisitor(visitorId);
+    const visitor = await Visitor.get(visitorId, urlSlug, { credentials });
     if (!visitor?.isAdmin) {
       return res.status(403).json({
         success: false,
@@ -87,17 +87,20 @@ export const handleSceneSwitch = async (req: Request, res: Response) => {
 
     // Delete old scene assets (batch operation)
     if (assetsToDelete.length > 0) {
-      await World.deleteDroppedAssets(urlSlug, {
-        credentials,
-        droppedAssets: assetsToDelete,
-      });
+      const assetIds = assetsToDelete.map((a) => a.id).filter(Boolean) as string[];
+      await World.deleteDroppedAssets(
+        urlSlug,
+        assetIds,
+        process.env.INTERACTIVE_SECRET!,
+        credentials
+      );
     }
 
     // Get position for new scene (use interactive asset position)
-    const assetDetails = await droppedAsset.fetchDetails();
+    await droppedAsset.fetchDroppedAssetById();
     const position = {
-      x: assetDetails.position.x,
-      y: assetDetails.position.y,
+      x: droppedAsset.position.x,
+      y: droppedAsset.position.y,
     };
 
     // Drop new scene

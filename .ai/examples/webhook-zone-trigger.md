@@ -31,7 +31,7 @@ export const handleZoneEnter = async (req: Request, res: Response) => {
     });
 
     // Close any existing iframe first (prevents multiple iframes)
-    await visitor.closeIframe().catch(() => {
+    await visitor.closeIframe(assetId).catch(() => {
       // Swallow error if no iframe is open
     });
 
@@ -50,9 +50,10 @@ export const handleZoneEnter = async (req: Request, res: Response) => {
 
     // Open iframe for visitor
     await visitor.openIframe({
-      url: iframeUrl.toString(),
-      width: 800,
-      height: 600,
+      droppedAssetId: assetId,
+      link: iframeUrl.toString(),
+      shouldOpenInDrawer: true,
+      title: "Zone Content",
     });
 
     return res.json({
@@ -92,7 +93,7 @@ export const handleZoneExit = async (req: Request, res: Response) => {
     });
 
     // Close iframe
-    await visitor.closeIframe().catch(() => {
+    await visitor.closeIframe(credentials.assetId).catch(() => {
       // Swallow error if no iframe is open
     });
 

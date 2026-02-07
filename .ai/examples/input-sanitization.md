@@ -172,13 +172,14 @@ export const handleSubmitEntry = async (req: Request, res: Response) => {
     const sanitizedScore = sanitizeNumber(score, 0, 1000000);
     const sanitizedDisplayName = sanitizeDisplayName(credentials.displayName);
 
-    const visitor = await Visitor.get(credentials.urlSlug, {
-      visitorId: credentials.visitorId,
+    const visitor = await Visitor.get(credentials.visitorId, credentials.urlSlug, {
+      credentials,
     });
 
     const droppedAsset = await DroppedAsset.get(
+      credentials.assetId,
       credentials.urlSlug,
-      credentials.assetId
+      { credentials }
     );
 
     // Safe to use sanitized values in data object
@@ -237,8 +238,8 @@ export const handleUpdateConfiguration = async (req: Request, res: Response) => 
       config
     );
 
-    const visitor = await Visitor.get(credentials.urlSlug, {
-      visitorId: credentials.visitorId,
+    const visitor = await Visitor.get(credentials.visitorId, credentials.urlSlug, {
+      credentials,
     });
 
     if (!visitor.isAdmin) {
@@ -249,8 +250,9 @@ export const handleUpdateConfiguration = async (req: Request, res: Response) => 
     }
 
     const droppedAsset = await DroppedAsset.get(
+      credentials.assetId,
       credentials.urlSlug,
-      credentials.assetId
+      { credentials }
     );
 
     await droppedAsset.updateDataObject({

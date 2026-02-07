@@ -213,7 +213,7 @@ export const grantXp = async ({
   // Level-up side effects
   if (leveledUp) {
     // Fire particle effect
-    await visitor.triggerParticle({ name: "level_up_sparkle", duration: 3000 }).catch(() => {
+    await visitor.triggerParticle({ name: "level_up_sparkle", duration: 3 }).catch(() => {
       console.error("Failed to trigger level-up particle");
     });
 

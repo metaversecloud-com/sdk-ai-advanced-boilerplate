@@ -1,7 +1,7 @@
 # World Activity Trigger Pattern
 
 > **Source**: sdk-race, sdk-grow-together
-> **SDK Methods**: `World.triggerWorldActivity()`, `world.triggerActivity()`
+> **SDK Methods**: `world.triggerActivity({ type, assetId })`
 > **Guide Phase**: Phase 7
 > **Difficulty**: Starter
 > **Tags**: `activity, signal, platform, event, notification, game-state`
@@ -18,17 +18,18 @@ Use this pattern to trigger visual and audio effects across the entire world in 
 // server/controllers/handleGameComplete.ts
 import { Request, Response } from "express";
 import { errorHandler, getCredentials, World, Visitor } from "../utils/index.js";
+import { WorldActivityType } from "@rtsdk/topia";
 
 export const handleGameComplete = async (req: Request, res: Response) => {
   try {
     const credentials = getCredentials(req.query);
     const { urlSlug, visitorId, profileId, uniqueName } = credentials;
 
-    const world = await World.create(urlSlug, {
+    const world = World.create(urlSlug, {
       credentials,
     });
 
-    const visitor = await Visitor.create(visitorId, urlSlug, {
+    const visitor = Visitor.create(visitorId, urlSlug, {
       credentials,
     });
 
@@ -48,8 +49,8 @@ export const handleGameComplete = async (req: Request, res: Response) => {
     // Trigger celebration activity (fire-and-forget pattern)
     world
       .triggerActivity({
-        activityName: "GAME_ON",
-        shouldTriggerForAllVisitors: true,
+        type: WorldActivityType.GAME_ON,
+        assetId: credentials.assetId,
       })
       .catch(() => {
         // Swallow errors — activity triggers are non-critical
@@ -100,13 +101,13 @@ export const handleHighScore = async (req: Request, res: Response) => {
       });
     }
 
-    const world = await World.create(urlSlug, {
+    const world = World.create(urlSlug, {
       credentials,
     });
 
     // Get current high score from world data object
-    const worldData = await world.fetchDataObject();
-    const currentHighScore = worldData?.highScore ?? 0;
+    await world.fetchDataObject();
+    const currentHighScore = (world.dataObject as any)?.highScore ?? 0;
 
     // Check if new high score
     if (score > currentHighScore) {
@@ -123,24 +124,17 @@ export const handleHighScore = async (req: Request, res: Response) => {
         },
       );
 
-      // Trigger high score celebration activity
-      // Using static method for fire-and-forget pattern
-      World.triggerWorldActivity({
-        credentials,
-        urlSlug,
-        activityName: "GAME_HIGH_SCORE",
-        shouldTriggerForAllVisitors: true,
+      // Trigger high score celebration activity (fire-and-forget)
+      world.triggerActivity({
+        type: WorldActivityType.GAME_HIGH_SCORE,
+        assetId: credentials.assetId,
       }).catch(() => {});
 
-      // Notify all visitors
-      const visitor = await Visitor.create(visitorId, urlSlug, {
-        credentials,
-      });
-
-      const visitorProfile = await visitor.fetchDetails();
-
-      await world.sendGlobalMessage({
-        message: `New high score! ${visitorProfile.username} scored ${score} points!`,
+      // Notify via toast
+      await world.fireToast({
+        groupId: "high-score",
+        title: "New High Score!",
+        text: `Someone scored ${score} points!`,
       });
 
       return res.json({
@@ -178,13 +172,14 @@ export const handleHighScore = async (req: Request, res: Response) => {
 // server/controllers/handleGameStateChange.ts
 import { Request, Response } from "express";
 import { errorHandler, getCredentials, World } from "../utils/index.js";
+import { WorldActivityType } from "@rtsdk/topia";
 
 type GamePhase = "WAITING" | "ACTIVE" | "COMPLETE";
 
-const ACTIVITY_MAP: Record<GamePhase, string> = {
-  WAITING: "GAME_WAITING",
-  ACTIVE: "GAME_ON",
-  COMPLETE: "GAME_COMPLETE",
+const ACTIVITY_MAP: Record<GamePhase, WorldActivityType> = {
+  WAITING: WorldActivityType.GAME_WAITING,
+  ACTIVE: WorldActivityType.GAME_ON,
+  COMPLETE: WorldActivityType.GAME_HIGH_SCORE, // Closest available type
 };
 
 export const handleGameStateChange = async (req: Request, res: Response) => {
@@ -201,16 +196,16 @@ export const handleGameStateChange = async (req: Request, res: Response) => {
       });
     }
 
-    const world = await World.create(urlSlug, {
+    const world = World.create(urlSlug, {
       credentials,
     });
 
     // Trigger corresponding activity
-    const activityName = ACTIVITY_MAP[phase];
+    const activityType = ACTIVITY_MAP[phase];
     world
       .triggerActivity({
-        activityName,
-        shouldTriggerForAllVisitors: true,
+        type: activityType,
+        assetId: credentials.assetId,
       })
       .catch(() => {});
 

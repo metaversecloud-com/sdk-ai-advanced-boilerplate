@@ -26,13 +26,14 @@ export const handleClaimAsset = async (req: Request, res: Response) => {
   try {
     const credentials = getCredentials(req.query);
 
-    const visitor = await Visitor.get(credentials.urlSlug, {
-      visitorId: credentials.visitorId,
+    const visitor = await Visitor.get(credentials.visitorId, credentials.urlSlug, {
+      credentials,
     });
 
     const droppedAsset = await DroppedAsset.get(
+      credentials.assetId,
       credentials.urlSlug,
-      credentials.assetId
+      { credentials }
     );
 
     // Check if already claimed
@@ -165,13 +166,14 @@ export const handleUpdateCustomization = async (req: Request, res: Response) => 
     const credentials = getCredentials(req.query);
     const { name, color } = req.body;
 
-    const visitor = await Visitor.get(credentials.urlSlug, {
-      visitorId: credentials.visitorId,
+    const visitor = await Visitor.get(credentials.visitorId, credentials.urlSlug, {
+      credentials,
     });
 
     const droppedAsset = await DroppedAsset.get(
+      credentials.assetId,
       credentials.urlSlug,
-      credentials.assetId
+      { credentials }
     );
 
     const ownerId = droppedAsset.dataObject?.ownerId;
@@ -233,13 +235,14 @@ export const handleGetGameState = async (req: Request, res: Response) => {
   try {
     const credentials = getCredentials(req.query);
 
-    const visitor = await Visitor.get(credentials.urlSlug, {
-      visitorId: credentials.visitorId,
+    const visitor = await Visitor.get(credentials.visitorId, credentials.urlSlug, {
+      credentials,
     });
 
     const droppedAsset = await DroppedAsset.get(
+      credentials.assetId,
       credentials.urlSlug,
-      credentials.assetId
+      { credentials }
     );
 
     const ownerId = droppedAsset.dataObject?.ownerId;
@@ -289,8 +292,8 @@ export const handleResetOwnership = async (req: Request, res: Response) => {
   try {
     const credentials = getCredentials(req.query);
 
-    const visitor = await Visitor.get(credentials.urlSlug, {
-      visitorId: credentials.visitorId,
+    const visitor = await Visitor.get(credentials.visitorId, credentials.urlSlug, {
+      credentials,
     });
 
     // Admin-only operation
@@ -302,8 +305,9 @@ export const handleResetOwnership = async (req: Request, res: Response) => {
     }
 
     const droppedAsset = await DroppedAsset.get(
+      credentials.assetId,
       credentials.urlSlug,
-      credentials.assetId
+      { credentials }
     );
 
     const lockId = getLockId(credentials.assetId, "reset");

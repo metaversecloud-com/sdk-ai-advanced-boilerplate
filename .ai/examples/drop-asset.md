@@ -7,7 +7,7 @@ Use the SDK's DroppedAssetFactory to create new Dropped Assets and add to / drop
  * @returns Promise resolving to the ids of the dropped assets or void if error occurs
  */
 import { Request, Response } from "express";
-import { errorHandler, getCredentials, Asset, DroppedAsset } from "../../server/utils/index.ts";
+import { errorHandler, getCredentials, Asset, DroppedAsset } from "../../server/utils/index.js";
 
 // Array of pre-defined assets with various properties including image layers and positioning
 const droppableAssets = [

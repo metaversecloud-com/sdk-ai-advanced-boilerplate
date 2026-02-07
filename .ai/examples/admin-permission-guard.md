@@ -24,8 +24,8 @@ import { errorHandler, getCredentials, Visitor } from "../utils/index.js";
 export const requireAdmin = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const credentials = getCredentials(req.query);
-    const visitor = await Visitor.get(credentials.urlSlug, {
-      visitorId: credentials.visitorId,
+    const visitor = await Visitor.get(credentials.visitorId, credentials.urlSlug, {
+      credentials,
     });
 
     if (!visitor.isAdmin) {
@@ -74,8 +74,8 @@ export const handleResetGameState = async (req: Request, res: Response) => {
     const credentials = getCredentials(req.query);
 
     // Check admin status
-    const visitor = await Visitor.get(credentials.urlSlug, {
-      visitorId: credentials.visitorId,
+    const visitor = await Visitor.get(credentials.visitorId, credentials.urlSlug, {
+      credentials,
     });
 
     if (!visitor.isAdmin) {
@@ -86,7 +86,7 @@ export const handleResetGameState = async (req: Request, res: Response) => {
     }
 
     // Perform admin-only operation
-    const droppedAsset = await DroppedAsset.get(credentials.urlSlug, credentials.assetId);
+    const droppedAsset = await DroppedAsset.get(credentials.assetId, credentials.urlSlug, { credentials });
     await droppedAsset.setDataObject({
       participants: [],
       leaderboard: [],

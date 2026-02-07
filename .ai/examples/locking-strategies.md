@@ -49,8 +49,9 @@ export const handleInitializeGame = async (req: Request, res: Response) => {
     const credentials = getCredentials(req.query);
 
     const droppedAsset = await DroppedAsset.get(
+      credentials.assetId,
       credentials.urlSlug,
-      credentials.assetId
+      { credentials }
     );
 
     // Generate time-bucketed lock ID
@@ -102,13 +103,14 @@ export const handleJoinGame = async (req: Request, res: Response) => {
   try {
     const credentials = getCredentials(req.query);
 
-    const visitor = await Visitor.get(credentials.urlSlug, {
-      visitorId: credentials.visitorId,
+    const visitor = await Visitor.get(credentials.visitorId, credentials.urlSlug, {
+      credentials,
     });
 
     const droppedAsset = await DroppedAsset.get(
+      credentials.assetId,
       credentials.urlSlug,
-      credentials.assetId
+      { credentials }
     );
 
     // Ensure data object exists with defaults
@@ -176,8 +178,8 @@ export const handleIncrementScore = async (req: Request, res: Response) => {
     const credentials = getCredentials(req.query);
     const { points } = req.body;
 
-    const visitor = await Visitor.get(credentials.urlSlug, {
-      visitorId: credentials.visitorId,
+    const visitor = await Visitor.get(credentials.visitorId, credentials.urlSlug, {
+      credentials,
     });
 
     // Generate lock ID for visitor-specific increment
@@ -271,8 +273,9 @@ export const handleUpdateLeaderboard = async (req: Request, res: Response) => {
     const assetLockId = getLockId(credentials.assetId, "leaderboard");
 
     const droppedAsset = await DroppedAsset.get(
+      credentials.assetId,
       credentials.urlSlug,
-      credentials.assetId
+      { credentials }
     );
 
     const currentLeaderboard = droppedAsset.dataObject?.leaderboard || [];
@@ -301,8 +304,8 @@ export const handleUpdateLeaderboard = async (req: Request, res: Response) => {
     // Lock at visitor level (personal stats)
     const visitorLockId = getLockId(credentials.visitorId, "stats");
 
-    const visitor = await Visitor.get(credentials.urlSlug, {
-      visitorId: credentials.visitorId,
+    const visitor = await Visitor.get(credentials.visitorId, credentials.urlSlug, {
+      credentials,
     });
 
     await visitor.incrementDataObjectValue("gamesPlayed", 1, {
@@ -334,11 +337,11 @@ Read-only operations and single-visitor data don't need locks:
 
 ```typescript
 // NO LOCK NEEDED - Read-only operation
-const droppedAsset = await DroppedAsset.get(urlSlug, assetId);
+const droppedAsset = await DroppedAsset.get(assetId, urlSlug, { credentials });
 const leaderboard = droppedAsset.dataObject?.leaderboard || [];
 
 // NO LOCK NEEDED - Single visitor, no shared state
-const visitor = await Visitor.get(urlSlug, { visitorId });
+const visitor = await Visitor.get(visitorId, urlSlug, { credentials });
 await visitor.setDataObject({ lastSeen: Date.now() });
 
 // LOCK NEEDED - Multiple visitors writing to same asset

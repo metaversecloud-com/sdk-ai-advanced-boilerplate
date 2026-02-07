@@ -10,8 +10,8 @@ Use the SDK's Visitor controller to grant inventory items (badges) and display t
  * @param badgeName - The name of the badge to award
  * @returns Promise resolving to success status or standardized error
  */
-import { Credentials } from "../../server/types/Credentials.ts";
-import { getCachedInventoryItems, standardizeError } from "../../server/utils/index.ts";
+import { Credentials } from "../../server/types/Credentials.js";
+import { getCachedInventoryItems, standardizeError } from "../../server/utils/index.js";
 
 export const awardBadge = async ({
   credentials,

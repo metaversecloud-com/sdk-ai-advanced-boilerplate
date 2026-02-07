@@ -7,8 +7,8 @@ Use the SDK's World controller to retrieve and initialize world data objects wit
  * @param credentials - Topia credentials including urlSlug and assetId
  * @returns Promise resolving to the world data object and instance, or an error
  */
-import { Credentials } from "../../server/types/Credentials.ts";
-import { DroppedAsset, World } from "../../server/utils/index.ts";
+import { Credentials } from "../../server/types/Credentials.js";
+import { DroppedAsset, World } from "../../server/utils/index.js";
 
 /**
  * Structure of the world data object containing configuration by sceneDropId
@@ -94,7 +94,7 @@ export const handleGetConfiguration = async (
     const { urlSlug, visitorId } = credentials;
 
     // Get world data object which contains theme configuration
-    const getWorldDataObjectResult = await getWorldDataObject(credentials);
+    const getWorldDataObjectResult = await getWorldAndDataObject({ credentials });
     if (getWorldDataObjectResult instanceof Error) throw getWorldDataObjectResult;
 
     const { theme } = getWorldDataObjectResult.dataObject;

@@ -72,7 +72,7 @@ Use this index to find examples by keyword. Search for the concept you need — 
 |---------|------------|------------|-------------|-------|
 | [badges.md](./badges.md) | Ecosystem cache, visitor inventory, UI display | Intermediate | Multiple | [add-badges](../skills/add-badges.md) |
 | [award-badge.md](./award-badge.md) | `visitor.grantInventoryItem()` | Starter | Multiple | [add-badges](../skills/add-badges.md) |
-| [inventory-cache.md](./inventory-cache.md) | `Ecosystem.getInventory()` | Intermediate | Multiple | [add-badges](../skills/add-badges.md) |
+| [inventory-cache.md](./inventory-cache.md) | `ecosystem.fetchInventoryItems()` | Intermediate | Multiple | [add-badges](../skills/add-badges.md) |
 | [grant-expression.md](./grant-expression.md) | `visitor.grantExpression()` | Intermediate | sdk-quest, virtual-pet, sdk-scavenger-hunt | [add-badges](../skills/add-badges.md) |
 
 ## Leaderboard
@@ -88,7 +88,7 @@ Use this index to find examples by keyword. Search for the concept you need — 
 | [teleport-visitor.md](./teleport-visitor.md) | `visitor.moveVisitor()` | Starter | sdk-grow-together, sdk-race | [add-route](../skills/add-route.md) |
 | [open-close-iframe.md](./open-close-iframe.md) | `visitor.openIframe()`, `visitor.closeIframe()` | Starter | sdk-quiz, virtual-pet | [add-route](../skills/add-route.md) |
 | [fire-toast.md](./fire-toast.md) | `visitor.fireToast()`, `world.fireToast()` | Starter | Consolidated | [add-route](../skills/add-route.md) |
-| [particle-effects.md](./particle-effects.md) | `visitor.triggerParticle()`, `droppedAsset.triggerParticle()` | Starter | virtual-pet, sdk-quest | [add-route](../skills/add-route.md) |
+| [particle-effects.md](./particle-effects.md) | `visitor.triggerParticle()`, `world.triggerParticle()` | Starter | virtual-pet, sdk-quest | [add-route](../skills/add-route.md) |
 | [sound-effects.md](./sound-effects.md) | Client-side `Audio()` API | Starter | sdk-grow-together, sdk-race | [add-component](../skills/add-component.md) |
 
 ## Game Mechanics

@@ -152,7 +152,7 @@ export const handleUpdateAsset = async (req: Request, res: Response) => {
         "https://example.com/bottom-layer.png",
         "https://example.com/top-layer.png",
       ),
-      droppedAsset.updatePosition(100, 200, 100),
+      droppedAsset.updatePosition(100, 200),
     ]);
 
     return res.json({ success: true, droppedAsset });
@@ -174,7 +174,7 @@ export const handleUpdateAsset = async (req: Request, res: Response) => {
 |--------|-----------|---------|
 | `updateClickType(opts)` | Click type, link, title, drawer | Change click behavior |
 | `updateWebImageLayers(bottom, top)` | Two image URLs | Change visual appearance |
-| `updatePosition(x, y, yOrderAdjust?)` | Coordinates | Move asset |
+| `updatePosition(x, y)` | Coordinates | Move asset |
 | `updateCustomTextAsset(style, text)` | Style object, text string | Update text content |
 | `deleteDroppedAsset()` | none | Remove from world |
 

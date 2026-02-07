@@ -35,7 +35,7 @@ export const getPlayerData = async ({
 }) => {
   // Create a User instance for the target player.
   // Note: User.create requires the profileId of the target user, not the current visitor.
-  const user = await User.create(targetProfileId, {
+  const user = User.create({
     credentials: { ...credentials, profileId: targetProfileId },
   });
 
@@ -67,7 +67,7 @@ export const getPlayerInventory = async ({
   credentials: Credentials;
   targetProfileId: string;
 }) => {
-  const user = await User.create(targetProfileId, {
+  const user = User.create({
     credentials: { ...credentials, profileId: targetProfileId },
   });
 
@@ -158,7 +158,7 @@ export const handleWaterPlant = async (
     });
 
     // Optionally update the plant owner's user data to track total waterings received
-    const ownerUser = await User.create(plantData.ownerProfileId, {
+    const ownerUser = User.create({
       credentials: { ...credentials, profileId: plantData.ownerProfileId },
     });
     await ownerUser.fetchDataObject();

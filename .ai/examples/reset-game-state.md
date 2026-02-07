@@ -51,7 +51,7 @@ export const handleResetGameState = async (
       },
     ];
 
-    const lockId = `${sceneDropId}-${resetCount}-${new Date(Math.round(new Date().getTime() / 10000) * 10000)}`
+    const lockId = `${sceneDropId}-reset-${new Date(Math.round(new Date().getTime() / 10000) * 10000).toISOString()}`;
 
     // Update the world data object with reset game state
     if (!world.dataObject) {
@@ -65,7 +65,7 @@ export const handleResetGameState = async (
         },
         {
           analytics,
-          { lock: { lockId, releaseLock: true } },
+          lock: { lockId, releaseLock: true },
         },
       );
     } else {
@@ -77,7 +77,8 @@ export const handleResetGameState = async (
         },
         {
           analytics,
-          { lock: { lockId, releaseLock: true } }, },
+          lock: { lockId, releaseLock: true },
+        },
       );
     }
 

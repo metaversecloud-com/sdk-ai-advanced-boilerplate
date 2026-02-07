@@ -8,7 +8,7 @@ Use the SDK's World controller to retrieve Dropped Assets from within a world gi
  */
 import { Request, Response } from "express";
 import { DroppedAssetInterface } from "@rtsdk/topia";
-import { errorHandler, getCredentials, World } from "../../server/utils/index.ts";
+import { errorHandler, getCredentials, World } from "../../server/utils/index.js";
 
 export const getAnchorAssets = async (
   req: Request,
