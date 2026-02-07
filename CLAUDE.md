@@ -46,7 +46,7 @@ I'll check recent git history and use `/remembering-conversations` to get back u
 
 ## Project Context
 
-- **App**: Lunch Swap — Topia SDK interactive app (React + TypeScript client, Node + Express server)
+- **App**: Topia SDK interactive app (React + TypeScript client, Node + Express server)
 - **Audience**: Ages 7–17. Interfaces must be memorable, easy to understand, and engaging for kids and teens.
 - **SDK**: `@rtsdk/topia` (v0.17.7) — [SDK Docs](https://metaversecloud-com.github.io/mc-sdk-js/index.html)
 - **Monorepo**: npm workspaces — `client/`, `server/`, `shared/`

@@ -195,7 +195,7 @@ These particle names have been confirmed across production SDK apps. Names are *
 
 | Particle Name | Visual Description | Common Use Cases | Source Apps |
 |--------------|-------------------|-----------------|------------|
-| `"Sparkle"` | Sparkle highlight (capitalized) | Item collection, asset interaction, general highlight | lunch-swap |
+| `"Sparkle"` | Sparkle highlight (capitalized) | Item collection, asset interaction, general highlight | — |
 | `"sparkle"` | Sparkle effect (lowercase) | Item collection, general feedback | guide/07-polish |
 | `"level_up_sparkle"` | Extended sparkle effect | Level up visual with longer duration | xp-leveling |
 | `"fireworks"` | Fireworks burst | Celebration, game win | guide/07-polish |
@@ -289,7 +289,7 @@ export const CelebrateButton = ({ particleName = "partyPopper_float" }: Celebrat
 | sdk-quest | Expression unlock | Visitor | `"whiteStar_burst"` | 3s | Burst effect for unlocking |
 | sdk-scavenger-hunt | Clue discovered | World (at clue position) | `"disco_float"` | 5s | Fixed position at the clue asset |
 | sdk-scavenger-hunt | Game completed | Visitor | `"partyPopper_float"` | 5s | Follows the winning visitor |
-| lunch-swap | Asset interaction | World (at asset position) | `"Sparkle"` | 3s | Highlights the interacted asset |
+| (custom app) | Asset interaction | World (at asset position) | `"Sparkle"` | 3s | Highlights the interacted asset |
 
 ## Common Mistakes
 

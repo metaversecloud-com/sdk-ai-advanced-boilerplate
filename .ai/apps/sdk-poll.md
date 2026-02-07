@@ -103,11 +103,14 @@ Results only shown to admins or users who have already voted:
 {isAdmin || selectedOption !== null ? voteText : ""}
 ```
 
-## RPG Relevance
+## Relevance by Game Type
 
-- **Voting/trading mechanics**: The vote reversal pattern (decrement old, increment new) is directly applicable to item trading
-- **Per-user tracking via profileId keys**: The `results: { [profileId]: { answer } }` pattern is reusable for tracking any per-player state
-- **Crucial vs non-crucial update pattern**: Useful for distinguishing destructive admin actions from safe config changes
+| Game Type | Applicable Patterns |
+|-----------|-------------------|
+| **Social / Collaborative** | Voting/selection mechanics, vote reversal (decrement old, increment new) |
+| **Board / Strategy** | Per-user tracking via profileId keys, turn-based choice tracking |
+| **Education / Learning** | Multiple-choice answers, result aggregation, admin-controlled content |
+| **Any game type** | Crucial vs non-crucial update pattern for admin actions |
 
 ## Weaknesses
 

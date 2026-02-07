@@ -10,8 +10,8 @@
 
 <!-- Example:
 - **Trigger type**: CLICK_ASSET
-- **Asset/zone name**: "Lunch Swap Station" key asset
-- **What the user sees first**: The app iframe opens showing available lunch items to trade
+- **Asset/zone name**: "Game Station" key asset
+- **What the user sees first**: The app iframe opens showing the main game interface
 -->
 
 ## Primary User Flow

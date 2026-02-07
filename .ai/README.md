@@ -127,15 +127,17 @@ Master navigation hub for all AI assistant documentation for building Topia SDK 
     └── sdk-trivia.md            Boilerplate clone (Low)
 ```
 
-## RPG Relevance Ranking
+## Relevance by Game Type
 
-For building the Lunch Swap RPG, prioritize these production apps:
+Each production app demonstrates patterns applicable to different game types. Use this to find the best references for what you're building.
 
-1. **sdk-grow-together** — Full inventory/economy, XP/leveling, social mechanics, tool system
-2. **virtual-pet** — XP/leveling, cooldowns, pet spawning, owner vs viewer detection
-3. **sdk-scavenger-hunt** — Badge achievements, cross-world progress, dynamic spawning
-4. **sdk-quest** — Daily limits, streaks, tiered badges, item relocation
-5. **sdk-race** — Real-time SSE/Redis, sequential checkpoints, scene switching
-6. **sdk-quiz** — Zone-based triggers, timed challenges
-7. **sdk-bulletin-board** — Approval workflows, S3 uploads, anchor placement
-8. **sdk-leaderboard** — Cross-app JWT data, EcosystemFactory
+| Game Type | Best Reference Apps | Key Patterns |
+|-----------|-------------------|--------------|
+| **Trivia / Quiz** | sdk-quiz, sdk-scavenger-hunt | Zone triggers, timed challenges, badge achievements, scoring |
+| **Collection / Scavenger Hunt** | sdk-scavenger-hunt, sdk-quest | Dynamic spawning, cross-world progress, daily limits, item relocation |
+| **Racing / Competition** | sdk-race, sdk-leaderboard | Real-time SSE/Redis, checkpoints, scene switching, rankings |
+| **Simulation / Virtual Pet** | sdk-grow-together, virtual-pet | XP/leveling, cooldowns, inventory/economy, growth stages |
+| **Social / Collaborative** | sdk-grow-together, sdk-bulletin-board | Trading, approval workflows, user-submitted content |
+| **Board / Strategy** | sdk-poll, sdk-leaderboard | Turn-based mechanics, vote tracking, per-player state |
+| **Education / Learning** | sdk-stride-check-in, sdk-quest | Daily check-ins, streaks, tiered progression, analytics |
+| **Creative / Builder** | sdk-bulletin-board, sdk-grow-together | S3 uploads, anchor placement, decoration systems |

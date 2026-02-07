@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Setup Claude Code skills for Lunch Swap development
+# Setup Claude Code skills for Topia SDK app development
 # Run once after cloning: bash scripts/setup-skills.sh
 # Re-run anytime to pick up new skills added to this list.
 #
@@ -30,7 +30,7 @@ install_skill() {
 }
 
 echo ""
-echo "=== Claude Code Skills Setup for Lunch Swap ==="
+echo "=== Claude Code Skills Setup for Topia SDK App ==="
 echo ""
 
 # ── Core Workflow ────────────────────────────────────────────

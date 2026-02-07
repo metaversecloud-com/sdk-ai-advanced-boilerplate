@@ -166,15 +166,15 @@ await world.dropScene({ allowNonAdmins: true, sceneId, position, sceneDropId });
 // LEADERBOARD, BADGES, SWITCH_TRACK
 ```
 
-## RPG Relevance
+## Relevance by Game Type
 
-- **Real-time SSE/Redis**: Live event streaming — applicable for real-time RPG events, trading notifications
-- **Sequential checkpoint validation**: Ordered quest steps — multi-step quest chains
-- **Dynamic badge system**: Track-specific + milestone badges — RPG achievements
-- **Audio feedback system**: Sound queue — immersive RPG feedback
-- **Scene replacement**: Swap entire environments — RPG area transitions
-- **3-minute timeout**: Race auto-expiry — timed quest mechanics
-- **Redis caching**: Fast state reads for high-frequency operations — game performance
+| Game Type | Applicable Patterns |
+|-----------|-------------------|
+| **Racing / Competition** | Real-time SSE/Redis, sequential checkpoint validation, 3-minute timeout |
+| **Collection / Scavenger Hunt** | Ordered step validation, dynamic badge system (track + milestone) |
+| **Trivia / Quiz** | Timed mechanics, audio feedback system, competitive leaderboard |
+| **Social / Collaborative** | Real-time event streaming for live multiplayer updates |
+| **Any game type** | Scene replacement (swap environments), Redis caching for performance |
 
 ## Weaknesses
 

@@ -104,13 +104,14 @@ for (let i = 0; i < sortedSchools.length; i++) {
 }
 ```
 
-## RPG Relevance
+## Relevance by Game Type
 
-- **Daily check-in mechanics**: Once vs daily modes — RPG daily login rewards
-- **Input sanitization pattern**: Server-side validation — safe admin content management
-- **In-memory caching with TTL**: 30-second cache for rankings — performance optimization
-- **SVG generation**: Dynamic image creation — custom visual feedback
-- **School/team grouping**: Consolidation logic — RPG team/faction system
+| Game Type | Applicable Patterns |
+|-----------|-------------------|
+| **Education / Learning** | Daily check-in mechanics (once vs daily modes), school/team grouping, rankings |
+| **Social / Collaborative** | Team/faction grouping, consolidation logic, input sanitization |
+| **Simulation / Virtual Pet** | Daily login rewards, streak-based incentives |
+| **Any game type** | In-memory caching with TTL, SVG generation for dynamic visuals |
 
 ## Weaknesses
 

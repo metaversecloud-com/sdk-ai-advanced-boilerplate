@@ -186,20 +186,15 @@ const ACTION_PARTICLES = {
 // Expression grant: "whiteStar_burst" on visitor
 ```
 
-## RPG Relevance (CRITICAL)
+## Relevance by Game Type
 
-This is the closest existing app to the lunch-swap RPG concept:
-
-- **XP/Leveling system**: Directly reusable — escalating thresholds, level-based unlocks
-- **Action cooldowns**: Same pattern for collecting items, solving problems
-- **Visitor data object for persistent player state**: Pet data stored on visitor, survives sessions
-- **Asset spawning near player**: Dropping collectible items in the world
-- **Owner vs viewer pattern**: Trading mechanics — view another player's items
-- **Expression/emote rewards**: Badge/achievement unlocks at milestones
-- **Life stages/evolution**: Character progression visual changes
-- **Trading**: Trade-in mechanic applicable to item trading
-- **Dual-context routing**: Key asset (shop/hub) vs spawned item (in-world collectible)
-- **S3-based dynamic images**: Item/character sprites from S3
+| Game Type | Applicable Patterns |
+|-----------|-------------------|
+| **Simulation / Virtual Pet** | XP/leveling, action cooldowns, life stages/evolution, persistent player state |
+| **Collection / Scavenger Hunt** | Asset spawning near player, item collection, expression/emote rewards |
+| **Social / Collaborative** | Owner vs viewer pattern (view another player's items), trading mechanics |
+| **Education / Learning** | XP progression with escalating thresholds, milestone-based unlocks |
+| **Creative / Builder** | S3-based dynamic images, dual-context routing (hub vs collectible) |
 
 ## Weaknesses
 

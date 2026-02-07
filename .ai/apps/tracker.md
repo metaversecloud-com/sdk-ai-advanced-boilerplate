@@ -73,7 +73,7 @@ Repos that are not SDK apps, are archived, use non-JS SDKs, or provide minimal l
 | **Very old / minimal** | `sdk-pong`, `sdk-collaborative-puzzle`, `sdk-move-select-visitors`, `sdk-checkin`, `sdk-calendar`, `sdk-bluejeans`, `inworld-npc-demo`, `multiplayer-games`, `multiplayer-iframe-game-example`, `soccer-hotshot`, `Soccer`, `Engine-Sharks-Minnows`, `math-capture`, `skyfall` |
 | **Non-SDK** | `Topia-Documentation`, `lance`, `Llangchain-Llama2-Template`, `nautical-math-adventure`, `mc-sdk-local-testing` |
 | **Codex experiments** | `*-codex` repos, `sushi-smash-codex` |
-| **Other** | `lunch-swap` (our app), `jpl_test`, `sdk-topia-activity-apps`, `sdk-bounty-builders-poc` |
+| **Other** | `jpl_test`, `sdk-topia-activity-apps`, `sdk-bounty-builders-poc` |
 
 ## Scan Log
 

@@ -24,14 +24,14 @@ const user = User.create();
 
 // Create a new interactive key pair for a specific app
 const keyPair = await user.createInteractiveKeyPair({
-  name: "my-lunch-swap-app",          // Human-readable label
-  description: "Lunch Swap game",      // Optional description
+  name: "my-topia-app",                // Human-readable label
+  description: "My interactive app",   // Optional description
 });
 
 // keyPair = {
 //   interactivePublicKey: "xFNUVGJH...",
 //   interactiveSecret: "YWI1NzJi...",
-//   name: "my-lunch-swap-app",
+//   name: "my-topia-app",
 //   createdAt: "2026-02-07T...",
 // }
 ```

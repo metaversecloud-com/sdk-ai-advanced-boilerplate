@@ -140,14 +140,15 @@ await component.updateDataObject({
 }, options);
 ```
 
-## RPG Relevance
+## Relevance by Game Type
 
-- **Core scoring/ranking system**: Directly applicable for student leaderboards, item counts, achievements
-- **Cross-app data sharing via JWT**: Can share inventory/scores between different RPG modules
-- **EcosystemFactory**: Cross-world persistent data — perfect for RPG progression that spans multiple areas
-- **Polymorphic component pattern**: Write once, store anywhere (world, ecosystem, visitor, asset)
-- **Dot-notation updates**: Efficient partial updates to deeply nested player data
-- **profileId-keyed data**: Standard pattern for per-player state
+| Game Type | Applicable Patterns |
+|-----------|-------------------|
+| **Racing / Competition** | Core scoring/ranking system, polymorphic leaderboard component |
+| **Trivia / Quiz** | Score tracking, high-score display, per-player rankings |
+| **Education / Learning** | Student leaderboards, achievement counts, cross-world progress |
+| **Social / Collaborative** | Cross-app data sharing via JWT, EcosystemFactory for cross-world persistence |
+| **Any game type** | Dot-notation updates for nested data, profileId-keyed per-player state |
 
 ## Weaknesses
 

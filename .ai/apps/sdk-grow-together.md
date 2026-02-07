@@ -226,20 +226,18 @@ if (clearInactiveOnly &&
     new Date(plotAssetData.lastInteractionDate) < new Date(Date.now() - 14 * 24 * 60 * 60 * 1000)))
 ```
 
-## RPG Relevance (CRITICAL)
+## Relevance by Game Type
 
-This is the **most feature-rich app** and closest to the lunch-swap RPG:
+This is the **most feature-rich production app** — applicable across many game types:
 
-- **Full inventory system**: Seeds, tools, decorations with ecosystem integration — directly reusable for lunch items, ingredients, accessories
-- **Economy (coins + XP)**: Earning, spending, rewards — applicable for RPG currency
-- **100-level XP system**: Quadratic curve with named ranks — character progression
-- **Social mechanics**: Water friends' crops for rewards — trading/gifting pattern
-- **Tool system**: Items that modify gameplay (mulch reduces time, compost multiplies rewards) — RPG item effects
-- **Probability-based rewards**: Compost multipliers, watering can random rewards — loot system
-- **Real-time growth timers**: Countdown-based mechanics — quest/mission timers
-- **Plot claiming & ownership**: Personal space in world — RPG territory
-- **Shared module pattern**: Code sharing between client/server — architecture best practice
-- **Decoration system**: Cosmetic unlocks placed in world — accessory/badge display
+| Game Type | Applicable Patterns |
+|-----------|-------------------|
+| **Simulation / Virtual Pet** | Full inventory system, 100-level XP with quadratic curve, growth timers, plot claiming |
+| **Social / Collaborative** | Water friends' crops for rewards (gifting/trading), shared module pattern |
+| **Collection / Scavenger Hunt** | Probability-based rewards, tool effects, decoration unlocks |
+| **Education / Learning** | XP progression, countdown timers, milestone-based unlocks |
+| **Creative / Builder** | Decoration system (cosmetics placed in world), plot ownership |
+| **Racing / Competition** | Economy (coins + XP), leaderboard integration |
 
 ## Weaknesses
 

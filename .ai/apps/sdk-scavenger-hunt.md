@@ -162,15 +162,14 @@ const spawnedAsset = await DroppedAsset.drop(asset, {
 // Handles: contentImgUrl -> contentUrl, isVideo -> mediaType, key format migration
 ```
 
-## RPG Relevance
+## Relevance by Game Type
 
-- **Badge/achievement system**: 5 badges with cross-world aggregate tracking — directly applicable for RPG achievements
-- **Inventory cache pattern**: 24-hour cache with stale fallback — reusable for any ecosystem inventory
-- **Cross-world progress**: Visitor data persists across worlds/scenes — RPG character progression
-- **Multi-scene support**: Independent instances per sceneDropId — different RPG zones
-- **Dynamic asset spawning**: Drop new interactive items in world — spawning collectibles/quest items
-- **Multi-question types**: Text, multiple choice, all-that-apply — quiz/puzzle mechanics
-- **Theming system**: Different visual themes — RPG environment themes
+| Game Type | Applicable Patterns |
+|-----------|-------------------|
+| **Collection / Scavenger Hunt** | Dynamic asset spawning, cross-world progress, 5-badge achievement system |
+| **Trivia / Quiz** | Multi-question types (text, multiple choice, all-that-apply), theming system |
+| **Education / Learning** | Cross-world progress persistence, multi-scene support, milestone badges |
+| **Any game type** | Inventory cache pattern (24h TTL with stale fallback), independent scene instances |
 
 ## Weaknesses
 

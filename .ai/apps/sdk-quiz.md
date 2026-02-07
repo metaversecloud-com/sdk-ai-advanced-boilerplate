@@ -118,13 +118,14 @@ if (dataObject?.[sceneDropId]?.keyAssetId) {
 }
 ```
 
-## RPG Relevance
+## Relevance by Game Type
 
-- **Zone-based gameplay**: Webhook-driven iframe opening when entering zones — applicable for RPG area triggers
-- **Timed challenges**: Timer + scoring — puzzle/quest completion mechanics
-- **Badge system**: 4 achievement badges with inventory integration — RPG achievements
-- **Admin content editing**: CRUD for questions — admin content management
-- **Leaderboard**: Score + time ranking — competitive RPG elements
+| Game Type | Applicable Patterns |
+|-----------|-------------------|
+| **Trivia / Quiz** | Zone-based triggers, timed challenges, badge system (4 tiers), admin question CRUD |
+| **Education / Learning** | Score + time ranking leaderboard, zone-triggered content delivery |
+| **Collection / Scavenger Hunt** | Zone-based gameplay (webhook-driven iframe), badge achievements |
+| **Racing / Competition** | Timer mechanics, competitive leaderboard with score + time |
 
 ## Weaknesses
 

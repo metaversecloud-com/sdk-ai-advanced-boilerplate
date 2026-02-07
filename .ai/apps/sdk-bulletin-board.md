@@ -152,15 +152,14 @@ const result = await someUtil(args);
 if (result instanceof Error) throw result;
 ```
 
-## RPG Relevance
+## Relevance by Game Type
 
-- **Approval workflow**: Applicable for student-submitted content (custom lunch items, trade requests)
-- **Anchor asset placement**: Physical world item placement at predefined positions
-- **Dual asset dropping (image + text)**: Placing items with labels in the world
-- **S3 integration**: User-uploaded images for custom items/avatars
-- **Scene management**: Swapping environments (cafeteria, playground, classroom)
-- **Data migration pattern**: Upgrading data structures without data loss
-- **Message/submission system**: Trading requests, bulletin posts, quest submissions
+| Game Type | Applicable Patterns |
+|-----------|-------------------|
+| **Social / Collaborative** | Approval workflow for user-submitted content, message/submission system |
+| **Creative / Builder** | S3 integration for user-uploaded images, dual asset dropping (image + text) |
+| **Education / Learning** | Student content submissions, anchor asset placement at predefined positions |
+| **Any game type** | Scene management (swapping environments), data migration pattern |
 
 ## Weaknesses
 

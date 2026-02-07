@@ -128,14 +128,14 @@ promises.push(keyAsset.updateDataObject({ ... }, { analytics }));
 const results = await Promise.allSettled(promises);
 ```
 
-## RPG Relevance
+## Relevance by Game Type
 
-- **Daily collection limits**: Enforced daily caps — applicable for RPG daily quests
-- **Streak system**: Consecutive day tracking — RPG login/activity streaks
-- **8-tier badge progression**: Bronze -> Silver -> Gold -> Diamond — achievement tiers
-- **Emote unlock milestones**: Every 50 items — RPG milestone rewards
-- **Item relocation**: Items move after collection — dynamic world state
-- **Google Sheets analytics**: External tracking — progress logging
+| Game Type | Applicable Patterns |
+|-----------|-------------------|
+| **Collection / Scavenger Hunt** | Daily collection limits, item relocation after collection, dynamic world state |
+| **Education / Learning** | Streak system (consecutive days), 8-tier badge progression, milestone rewards |
+| **Simulation / Virtual Pet** | Daily caps, emote unlock milestones (every 50 items) |
+| **Any game type** | Badge tiers (Bronze → Silver → Gold → Diamond), Google Sheets analytics |
 
 ## Weaknesses
 
