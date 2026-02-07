@@ -27,3 +27,4 @@ build-ssr
 
 # custom
 server/dist
+_analysis/

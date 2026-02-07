@@ -26,25 +26,18 @@ Apps that have a detailed analysis file in `.ai/apps/`.
 | `sdk-stride-check-in` | `sdk-stride-check-in.md` | `^0.15.8` | 2025-05-01 | — | Medium (older SDK) |
 | `virtual-pet` | `virtual-pet.md` | `^0.15.9` | 2025-05-01 | — | Medium (older SDK) |
 | `sdk-trivia` | `sdk-trivia.md` | `^0.17.3` | 2025-05-01 | — | Low (boilerplate clone) |
+| `jukebox` | `jukebox.md` | `^0.15.8` | 2026-02-07 | — | Medium (older SDK) |
+| `connect4` | `connect4.md` | `^0.15.9` | 2026-02-07 | — | Medium (older SDK) |
+| `sdk-chess-game` | `sdk-chess-game.md` | `^0.15.8` | 2026-02-07 | — | Medium (older SDK) |
+| `sdk-build-an-asset` | `sdk-build-an-asset.md` | `^0.18.3` | 2026-02-07 | — | Low (recent SDK) |
+| `sdk-cms` | `sdk-cms.md` | `^0.17.4` | 2026-02-07 | — | Medium (older SDK) |
+| `sdk-tictactoe` | `sdk-tictactoe.md` | `^0.15.8` | 2026-02-07 | — | Medium (older SDK) |
+| `sdk-wiggle` | `sdk-wiggle.md` | `^0.15.8` | 2026-02-07 | — | Medium (older SDK) |
+| `ee-apps` | `ee-apps.md` | `@rtsdk/topia-tools` | 2026-02-07 | — | Low (Game Engine, not SDK) |
+| `sdk-npc-voice-session` | `sdk-npc-voice-session.md` | `^0.17.7` | 2026-02-07 | — | Low (minimal/demo) |
+| `breakout` | `breakout.md` | `^0.17.7` | 2026-02-07 | — | Medium |
 
 > **Note**: `last_analyzed` dates of 2025-05-01 are approximate — these analyses were created during the initial boilerplate build. Exact dates are not known.
-
-## Not Yet Analyzed — High Priority
-
-New apps with unique patterns not covered by existing analyses. Analyze these first.
-
-| Repo | Description | SDK Version | Unique Patterns | Status |
-|------|------------|-------------|-----------------|--------|
-| `ee-apps` | Experience Engine apps | `@rtsdk/topia-tools@^0.1.0` | New architecture, physics/collision, `topia dev` CLI | Not started |
-| `connect4` | On-canvas Connect 4 game | `^0.15.9` | On-canvas gameplay, dynamic asset board, `node-cron`, `express-queue` | Not started |
-| `sdk-chess-game` | Chess with game engine | `^0.15.8` | `chess.js` integration, Redis state, controller subdirectories | Not started |
-| `sdk-wiggle` | Real-time multiplayer snake | `^0.15.8` | `lance-gg` + `@rtsdk/lance-topia`, Socket.io, physics multiplayer | Not started |
-| `sdk-build-an-asset` | Asset customization builder | `^0.18.3` | `jimp` image composition, S3 storage, asset claiming/ownership | Not started |
-| `jukebox` | YouTube music jukebox | `^0.15.8` | `@googleapis/youtube`, Redis, `updateBroadcast`/`updateMediaType`/`updateUploadedMediaSelected` | Not started |
-| `sdk-cms` | Content management system | `^0.17.4` | `link-preview-js`, asset search, content list CRUD | Not started |
-| `breakout` | Speed networking breakouts | — | Group assignment, timed session rotation, visitor grouping | Not started |
-| `sdk-tictactoe` | On-canvas TicTacToe | `^0.15.8` | On-canvas board game (simpler than Connect4), `node-cron` | Not started |
-| `sdk-npc-voice-session` | NPC voice interaction | `^0.17.7` | Voice session management, NPC patterns (early stage) | Not started |
 
 ## Not Yet Analyzed — Medium Priority
 
@@ -56,7 +49,6 @@ Interesting but more niche. Analyze after high-priority apps.
 | `sdk-toast-notifications` | Scheduled toast system | `node-cron` scheduled tasks, `luxon` datetime | Not started |
 | `sdk-skill-sprint` | Skill-based sprint game | May have skill progression patterns | Not started |
 | `ai-npc-demo` | AI NPC demo | AI character integration, multi-client architecture | Not started |
-| `breakout` | Speed networking | Group management, timed sessions | Not started |
 | `airtable` | Airtable integration | External service sync (very old SDK `^0.8.5`) | Not started |
 
 ## Not Relevant / Low Priority
@@ -82,3 +74,4 @@ Record each scan here for audit trail.
 | Date | Scanned By | Repos Checked | New Commits Found | Actions Taken |
 |------|-----------|---------------|-------------------|---------------|
 | 2026-02-07 | Claude Opus 4.6 | All 83 org repos | Initial scan | Created tracker, identified 10 high-priority new repos |
+| 2026-02-07 | Claude Opus 4.6 | 10 high-priority repos | — | Analyzed all 10: jukebox, connect4, chess, build-an-asset, cms, tictactoe, wiggle, ee-apps, npc-voice, breakout |

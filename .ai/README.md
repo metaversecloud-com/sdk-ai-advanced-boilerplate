@@ -2,6 +2,16 @@
 
 Master navigation hub for all AI assistant documentation for building Topia SDK applications.
 
+## SDK vs Game Engine
+
+Topia apps can use the **SDK**, the **Game Engine**, or **both together**. Choose based on your experience type:
+
+- **SDK** — Session persistence, drawer/modal UI, static canvas assets, webhooks, world building. Best for: quizzes, polls, scavenger hunts, board games, check-ins, social apps.
+- **Game Engine** — Low-latency interaction, collision handling, physics, immersive 60fps gameplay. Best for: racing, platformers, real-time multiplayer, physics games.
+- **Both** — Game Engine for core gameplay + SDK for persistent state, UI drawers (inventory, stats), badges, and leaderboards. Example: multiplayer arcade game with a side panel showing player inventory.
+
+See `guide/decision-tree.md` for the full decision flow. See `apps/ee-apps.md` for Game Engine patterns.
+
 ## Quick Start
 
 | Task | Start Here |
@@ -111,8 +121,9 @@ Master navigation hub for all AI assistant documentation for building Topia SDK 
 │   ├── new-feature.md           Adding to existing app
 │   └── pre-deploy.md            Shipping checklist
 │
-└── apps/                        Production app documentation (13 files)
+└── apps/                        Production app documentation (23 files)
     ├── sdk-reference.md         Complete SDK API reference
+    ├── tracker.md               Analysis tracker & scan log
     ├── sdk-grow-together.md     Gardening game (High quality)
     ├── virtual-pet.md           Tamagotchi-style pet (High)
     ├── sdk-scavenger-hunt.md    Clue-finding + challenge (High)
@@ -124,7 +135,17 @@ Master navigation hub for all AI assistant documentation for building Topia SDK 
     ├── sdk-poll.md              In-world voting (Medium)
     ├── scene-swapper.md         Scene management (Medium)
     ├── sdk-stride-check-in.md   School check-in (Medium)
-    └── sdk-trivia.md            Boilerplate clone (Low)
+    ├── sdk-trivia.md            Boilerplate clone (Low)
+    ├── jukebox.md               YouTube jukebox with Redis SSE (Medium)
+    ├── connect4.md              On-canvas Connect 4 game (High)
+    ├── sdk-chess-game.md        Chess with SSE + chess.js (Medium-High)
+    ├── sdk-build-an-asset.md    Asset customization builder (Medium)
+    ├── sdk-cms.md               Content management system (Medium)
+    ├── sdk-tictactoe.md         On-canvas Tic-Tac-Toe (Medium)
+    ├── sdk-wiggle.md            Real-time multiplayer snake (Medium)
+    ├── ee-apps.md               Experience Engine games (High complexity)
+    ├── sdk-npc-voice-session.md NPC voice session demo (Low)
+    └── breakout.md              Speed networking breakouts (High complexity)
 ```
 
 ## Relevance by Game Type
@@ -137,7 +158,10 @@ Each production app demonstrates patterns applicable to different game types. Us
 | **Collection / Scavenger Hunt** | sdk-scavenger-hunt, sdk-quest | Dynamic spawning, cross-world progress, daily limits, item relocation |
 | **Racing / Competition** | sdk-race, sdk-leaderboard | Real-time SSE/Redis, checkpoints, scene switching, rankings |
 | **Simulation / Virtual Pet** | sdk-grow-together, virtual-pet | XP/leveling, cooldowns, inventory/economy, growth stages |
-| **Social / Collaborative** | sdk-grow-together, sdk-bulletin-board | Trading, approval workflows, user-submitted content |
-| **Board / Strategy** | sdk-poll, sdk-leaderboard | Turn-based mechanics, vote tracking, per-player state |
-| **Education / Learning** | sdk-stride-check-in, sdk-quest | Daily check-ins, streaks, tiered progression, analytics |
-| **Creative / Builder** | sdk-bulletin-board, sdk-grow-together | S3 uploads, anchor placement, decoration systems |
+| **Social / Collaborative** | sdk-grow-together, sdk-bulletin-board, jukebox | Trading, approval workflows, shared media queues |
+| **Board / Strategy** | connect4, sdk-chess-game, sdk-tictactoe | On-canvas rendering, turn validation, win detection, webhook click handlers |
+| **Education / Learning** | sdk-stride-check-in, sdk-quest, breakout | Daily check-ins, streaks, breakout rooms, group rotation |
+| **Creative / Builder** | sdk-build-an-asset, sdk-bulletin-board | JIMP image composition, S3 uploads, asset customization |
+| **Real-Time Multiplayer** | sdk-wiggle, ee-apps | Lance.gg + Socket.io, Game Engine collision/physics, zone-based play |
+| **Audio / Video Streaming** | jukebox | updateMediaType, Redis pub-sub SSE, YouTube API integration |
+| **Group / Workshop** | breakout | Fair round-robin pairing, private zone management, batch teleportation |

@@ -2,6 +2,57 @@
 
 Use this lookup table to find the right pattern, phase, and example for common SDK app needs.
 
+## SDK vs Game Engine: The First Decision
+
+Before choosing patterns, decide which platform layer(s) your app needs. Many apps use **both together**.
+
+| Capability | SDK | Game Engine |
+|-----------|-----|-------------|
+| **Session persistence** (data objects, state) | Yes | No |
+| **Drawer & modal UI** (iframe-based interfaces) | Yes | No |
+| **Static assets on canvas** (images, text, interactive) | Yes | No |
+| **Webhooks** (zone triggers, click handlers) | Yes | No |
+| **World building & editing** (scenes, asset management) | Yes | No |
+| **Low-latency interaction** (real-time movement, actions) | No | Yes |
+| **Collision & collision handling** | No | Yes |
+| **Physics** (gravity, momentum, forces) | No | Yes |
+| **Immersive, responsive gameplay** (60fps interactions) | No | Yes |
+
+### When to Use What
+
+```
+What kind of experience are you building?
+  |
+  +-- Turn-based / menu-driven (quiz, poll, check-in)
+  |     --> SDK only
+  |
+  +-- Collection / exploration (scavenger hunt, quest)
+  |     --> SDK only (webhooks + data objects)
+  |
+  +-- Real-time multiplayer game (racing, snake, platformer)
+  |     --> Game Engine (core gameplay) + SDK (persistence, UI, badges)
+  |
+  +-- Physics-based game (breakout, pong, platformer)
+  |     --> Game Engine (physics, collision) + SDK (scores, leaderboard)
+  |
+  +-- Board game on canvas (chess, connect4, tic-tac-toe)
+  |     --> SDK only (asset grid, data objects for state)
+  |
+  +-- Social / creative (bulletin board, pet, farm)
+  |     --> SDK only (data objects, assets, drawer UI)
+  |
+  +-- Hybrid (multiplayer game + inventory sidebar)
+        --> Game Engine (gameplay) + SDK (drawer with inventory/stats)
+```
+
+### Combined Architecture Example
+
+A player is in a multiplayer Game Engine experience (low-latency movement, collision, physics) while simultaneously having a side drawer open via the SDK showing their inventory, stats, or chat. The Game Engine handles the 60fps gameplay loop; the SDK handles persistent state, achievements, and UI panels.
+
+**Reference**: See `ee-apps` analysis in `.ai/apps/ee-apps.md` for Game Engine patterns and `@rtsdk/topia-tools`.
+
+---
+
 ## Data Storage and State
 
 | I want to... | Pattern | Phase | Example / Reference | Skill |
