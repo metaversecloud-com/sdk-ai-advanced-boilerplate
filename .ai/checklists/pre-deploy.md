@@ -55,8 +55,9 @@ Run through this checklist before deploying a Topia SDK app to production.
 ## Testing
 
 - [ ] `cd server && npm test` — all tests pass
-- [ ] New routes have corresponding test coverage
+- [ ] New routes have corresponding test coverage (use `write-tests` skill)
 - [ ] SDK mocks are up to date in `server/mocks/@rtsdk/topia.ts`
+- [ ] `/webapp-testing` — frontend flows verified (pages render, interactions work, no console errors)
 
 ## Error Handling
 

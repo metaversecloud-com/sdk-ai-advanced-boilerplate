@@ -36,3 +36,17 @@ Composed (build on foundations):
 Self-contained:
   add-admin-feature  ·  add-analytics  ·  write-tests  ·  debug-sdk
 ```
+
+## Recommended Claude Code Skills
+
+These are installable [skills.sh](https://skills.sh) skills that complement the runbooks above. If you don't have them, install with `npx skills add <package>`.
+
+| Skill | Install | Why |
+|-------|---------|-----|
+| **systematic-debugging** | `npx skills add @anthropic/systematic-debugging` | Structured debugging methodology. Complements `debug-sdk` for tracing SDK calls, server errors, and credential flow issues. |
+| **writing-plans** | `npx skills add @anthropic/writing-plans` | Plan multi-step implementations before writing code. Essential when following the 7-phase guide or composed skills like add-leaderboard. |
+| **brainstorming** | `npx skills add @anthropic/brainstorming` | Explore intent, requirements, and design before implementation. Use before any creative work — new features, components, or behavior changes. |
+| **webapp-testing** | `npx skills add @anthropic/webapp-testing` | Test the running app with Playwright (`:3001`/`:3000`). Complements the Jest + supertest server tests with frontend verification. |
+| **frontend-design** | `npx skills add @anthropic/frontend-design` | Build polished React components. Use alongside the SDK CSS classes in `.ai/style-guide.md` for UI work. |
+| **mermaid-diagrams** | `npx skills add @anthropic/mermaid-diagrams` | Generate architecture, sequence, and flow diagrams. Useful for documenting SDK call chains, data object flows, and app structure. |
+| **skill-creator** | `npx skills add @anthropic/skill-creator` | Create new reusable skills. Use when you build a novel pattern worth sharing back to the [boilerplate repo](https://github.com/metaversecloud-com/sdk-ai-advanced-boilerplate) (see `CLAUDE.md` → Contribute Back). |

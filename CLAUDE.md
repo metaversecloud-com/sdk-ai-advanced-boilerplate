@@ -4,16 +4,17 @@
 
 | Task | Workflow |
 |------|---------|
-| **New app from boilerplate** | 1. Create PRD → `.ai/templates/prd/` 2. Follow `.ai/checklists/new-app.md` 3. Build with `.ai/guide/` phases |
-| **Add feature to existing app** | 1. Find skill in `.ai/skills/README.md` 2. Follow step-by-step runbook 3. Reference `.ai/examples/` |
+| **New app from boilerplate** | 1. `/brainstorming` → multi-file PRD in `.ai/templates/prd/` 2. `/writing-plans` → implementation plan 3. Follow `.ai/checklists/new-app.md` 4. Build with `.ai/guide/` phases 5. `/mermaid-diagrams` on major feature/system completion |
+| **Add feature to existing app** | 1. `/brainstorming` → explore requirements 2. Find skill in `.ai/skills/README.md` 3. `/writing-plans` if multi-step 4. `/frontend-design` for game-facing UI 5. Reference `.ai/examples/` 6. Test (see Testing Protocol) |
 | **Step-by-step runbook** | `.ai/skills/README.md` — task-to-skill lookup (add route, component, data object, leaderboard, badges, etc.) |
-| **Fix a bug** | Read code → fix → test → follow `.ai/templates/workflow.md` |
+| **Fix a bug** | Read code → `/systematic-debugging` → fix → test → follow `.ai/templates/workflow.md` |
 | **Look up a pattern** | `.ai/guide/decision-tree.md` → `.ai/examples/README.md` |
 | **Pre-deploy** | `.ai/checklists/pre-deploy.md` |
 
 ## Project Context
 
 - **App**: Lunch Swap — Topia SDK interactive app (React + TypeScript client, Node + Express server)
+- **Audience**: Ages 7–17. Interfaces must be memorable, easy to understand, and engaging for kids and teens.
 - **SDK**: `@rtsdk/topia` (v0.17.7) — [SDK Docs](https://metaversecloud-com.github.io/mc-sdk-js/index.html)
 - **Monorepo**: npm workspaces — `client/`, `server/`, `shared/`
 - **Dev**: `npm run dev` (Vite on :3001 proxied to Express on :3000)
@@ -100,7 +101,9 @@ export const handleExample = async (req: Request, res: Response) => {
 
 ## Styling
 
-**MUST use SDK CSS classes** from `styles-3.0.2.css`. See `.ai/style-guide.md` for full reference.
+### Base Layer: SDK CSS Classes (required)
+
+**MUST use SDK CSS classes** from `styles-3.0.2.css` for all standard UI elements. See `.ai/style-guide.md` for full reference.
 
 - `h1`/`h2`/`p1`/`p2` for typography
 - `btn`/`btn-outline`/`btn-text`/`btn-danger` for buttons
@@ -111,12 +114,40 @@ export const handleExample = async (req: Request, res: Response) => {
 
 Component structure: see `.ai/templates/component.tsx`
 
-## Testing
+### Experience Layer: `/frontend-design` (for game and feature UI)
 
-- Add tests in `server/tests/` for each route
+Use `/frontend-design` when building components unique to the app experience — leaderboards, game boards, achievement displays, onboarding flows, interactive panels. Ask: **what makes this interface memorable, easy to understand, and engaging?**
+
+- **Audience is ages 7–17** — clarity and delight matter more than sophistication
+- SDK classes remain the base (buttons, forms, cards stay standard)
+- `/frontend-design` adds the experience layer on top: layout composition, animation and motion, color atmosphere, and visual storytelling
+- Prioritize: clear visual hierarchy, rewarding animations on actions, intuitive spatial layout, and age-appropriate theming
+- Every game-facing component should feel like it was designed for *this* game, not pulled from a generic template
+
+## Testing Protocol
+
+Testing is **required**, not optional. Run tests before and after every change.
+
+### When to Test
+
+- **Before starting work**: `cd server && npm test` — confirm green baseline
+- **After every route/controller change**: run tests again immediately
+- **After every feature**: add new tests before considering the feature complete
+- **Before any commit or deploy**: all tests must pass
+
+### Server Tests (Jest + supertest)
+
+- Add tests in `server/tests/` for each route (use `write-tests` skill)
 - Mock SDK with `server/mocks/@rtsdk/topia.ts`
 - Assert: HTTP status, JSON schema, SDK method calls, credentials flow
 - Source imports use `.js` suffix (ESM); Jest strips `.js` for relative paths only
+- Run: `cd server && npm test`
+
+### Frontend Verification (webapp-testing)
+
+- Use `/webapp-testing` to verify frontend flows after major UI changes
+- Confirm pages render, user interactions work, and no console errors
+- Especially important for multi-component features (leaderboards, admin panels, forms)
 
 ## Environment
 
@@ -159,7 +190,7 @@ The `.ai/` folder in this app is a local copy. The boilerplate repo is the singl
 
 ### When You Create Something Reusable
 
-When you create a **novel pattern, utility, or workflow** during development that could be reused across apps:
+When you create a **novel pattern, utility, or workflow** during development that could be reused across apps, use `/skill-creator` to structure it properly, then:
 
 1. **Add locally first** — Add the new file to the appropriate `.ai/` subdirectory in this app:
    - New code pattern → `.ai/examples/` (header metadata, When to Use, Server/Client Implementation, Variations, Common Mistakes, Related Examples, Related Skills, Tags)

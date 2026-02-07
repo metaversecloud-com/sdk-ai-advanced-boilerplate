@@ -49,9 +49,12 @@ Use this checklist when adding a new feature to an already-running Topia SDK app
 
 ## Testing
 
-- [ ] Add tests for new routes in `server/tests/`
+- [ ] Add tests for new routes in `server/tests/` (use `write-tests` skill)
 - [ ] Update existing tests if behavior changed
 - [ ] Run `cd server && npm test` — all passing
+- [ ] Use `/webapp-testing` for frontend verification if UI was changed
+  - [ ] Pages render without console errors
+  - [ ] User interactions work as expected
 
 ## Verification
 
