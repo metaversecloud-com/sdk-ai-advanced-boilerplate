@@ -262,6 +262,7 @@ Run `npm run setup` to configure `.env` interactively. In dev mode with `API_KEY
 | Base rules (detailed) | `.ai/rules.md` |
 | Checklists | `.ai/checklists/` |
 | 12 production app analyses | `.ai/apps/` |
+| App analysis tracker | `.ai/apps/tracker.md` |
 
 Always reference `.ai/` documentation before starting implementation.
 
@@ -336,3 +337,14 @@ Periodically pull updates from the central boilerplate repo to keep this app's `
    - Does the app already have this functionality?
    - If it's a good fit, consider implementing it using the corresponding skill runbook
 5. **Report** → Summarize what was synced, what's new, and whether any new features are worth adding
+
+### Scan SDK Apps for Updates (Periodic)
+
+Use `.ai/apps/tracker.md` to track when each app in the `metaversecloud-com` org was last analyzed. Periodically scan for new commits and re-analyze apps that have changed.
+
+1. **Check for updates** → For each analyzed app, run `gh api repos/metaversecloud-com/{repo}/commits?per_page=1` and compare against `last_commit` in the tracker.
+2. **Re-analyze changed apps** → Clone/fetch repos with new commits. Update the corresponding `.ai/apps/{name}.md` analysis file. Extract any new patterns as examples, templates, or skills.
+3. **Analyze new repos** → Check the "Not Yet Analyzed" section of the tracker. Prioritize high-priority repos. Create a new `.ai/apps/{name}.md` for each.
+4. **Validate against SDK docs** → When extracting code patterns, verify all SDK method signatures against `.ai/apps/sdk-reference.md`. Fix any issues before adding to examples.
+5. **Update the tracker** → Set `last_analyzed` date and `last_commit` hash. Log the scan in the Scan Log table.
+6. **Report** → Summarize what changed, what new patterns were found, and what examples/skills were added or updated.
