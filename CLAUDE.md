@@ -282,6 +282,18 @@ When you create a **novel pattern, utility, or workflow** during development tha
 2. **Update indexes** → Add the new file to `examples/README.md`, `skills/README.md`, or the relevant index, and update cross-references in `CLAUDE.md` and `decision-tree.md`
 3. **PR to the boilerplate repo** → Clone/fork `metaversecloud-com/sdk-ai-advanced-boilerplate`, add the new file(s) to the matching `.ai/` path, update its indexes, and open a pull request. Title format: `Add [type]: [name]` (e.g., `Add example: vote-reversal.md`, `Add skill: add-leaderboard.md`).
 
+### Pull Request Descriptions — Always Complete
+
+When creating or updating a pull request — to the boilerplate repo, the SDK, or **any** repository — you MUST fill in every section of the PR description template completely. No empty sections, no placeholder text. If a repo has a PR template, fill in every field. If it doesn't, include at minimum:
+
+- **Summary** — What changed and why (1–3 bullet points)
+- **What kind of change** — New feature, bug fix, docs, refactor, etc.
+- **Current vs. new behavior** — What was happening before and what happens now
+- **Breaking changes** — Explicitly state whether this is breaking and what's affected
+- **Details** — Files changed, design decisions, anything a reviewer needs to know
+
+A PR with empty template sections is not ready to submit.
+
 Example header format (add to top of every new `.ai/examples/*.md`):
 ```
 > **Source**: [app name(s)]
@@ -301,12 +313,14 @@ File issues at https://github.com/metaversecloud-com/mc-sdk-js/issues to request
 
 **2. During development** — When you hit SDK friction, work around a limitation, or write boilerplate that the SDK should handle, file a request with the concrete use case and a proposed API that would have made it seamless.
 
-Each issue should include:
+Each issue MUST be thorough and descriptive — no vague one-liners. Include all of the following:
 - **Summary**: What's missing and why it matters (developer experience, user attrition, etc.)
 - **Proposed API**: Method signatures, type definitions, and which class/factory they belong to
 - **Usage pattern**: A concrete code example showing the before (current workaround) and after (with the new capability)
 - **Security model**: Auth requirements and scoping
 - **Implementation suggestion**: Proposed REST endpoints and SDK-side implementation
+
+A well-written issue gets prioritized faster. The reader should fully understand the problem, the proposed solution, and the impact without needing to ask follow-up questions.
 
 Draft issues in `.ai/drafts/` before filing. Use `gh issue create -R metaversecloud-com/mc-sdk-js` to submit.
 
