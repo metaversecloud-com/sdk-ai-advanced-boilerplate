@@ -27,6 +27,7 @@
   },
   "workspaces": [
     "client",
-    "server"
+    "server",
+    "packages/multiplayer"
   ]
 }
