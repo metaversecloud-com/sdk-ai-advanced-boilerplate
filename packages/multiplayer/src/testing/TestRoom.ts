@@ -1,8 +1,9 @@
 import { EntityCollection } from '../core/TopiaRoom.js';
 import { Entity } from '../game/Entity.js';
+import { BotManager } from '../game/BotManager.js';
 import { DeferQueue } from '../topia/DeferQueue.js';
 import type { GameConfig } from '../game/TopiaGame.js';
-import type { Player, GameRoomContext } from '../game/types.js';
+import type { Player, BotBehaviorDef, GameRoomContext } from '../game/types.js';
 
 let testPlayerCounter = 0;
 
@@ -14,6 +15,7 @@ export class TestRoom implements GameRoomContext {
 
   private gameConfig: GameConfig;
   private players: Map<string, Player> = new Map();
+  private botManager: BotManager | null = null;
   private logMessages: Array<{ channel: string; message: string }> = [];
 
   private constructor(gameConfig: GameConfig) {
@@ -25,6 +27,43 @@ export class TestRoom implements GameRoomContext {
   static create(gameConfig: GameConfig): TestRoom {
     const room = new TestRoom(gameConfig);
     gameConfig.hooks.onCreate?.(room);
+
+    // Auto-fill bots if configured
+    if (gameConfig.bots) {
+      room.botManager = new BotManager(gameConfig.bots);
+      room.botManager.fillBots(0, (name) => {
+        // Create a synthetic bot player and run through onPlayerJoin
+        // so the game's entity spawning logic applies to bots too
+        const botPlayer: Player = {
+          id: `bot-player-${++testPlayerCounter}`,
+          entity: null as any,
+          topia: {
+            visitorId: testPlayerCounter,
+            displayName: name,
+            profileId: `bot-profile-${testPlayerCounter}`,
+            urlSlug: 'test-world',
+            sceneDropId: 'test-scene',
+            identityId: `bot-identity-${testPlayerCounter}`,
+          },
+        };
+
+        const entitiesBefore = room.entities.count;
+        gameConfig.hooks.onPlayerJoin?.(room, botPlayer);
+
+        // Find the entity that was spawned by onPlayerJoin
+        const entity = botPlayer.entity ?? (
+          room.entities.count > entitiesBefore
+            ? room.entities.all()[room.entities.count - 1]
+            : new Entity()
+        );
+
+        return {
+          entity,
+          sendInput: (input: Record<string, any>) => entity.onInput(input),
+        };
+      });
+    }
+
     return room;
   }
 
@@ -42,6 +81,14 @@ export class TestRoom implements GameRoomContext {
         identityId: overrides?.identityId ?? `identity-${testPlayerCounter}`,
       },
     };
+
+    // Despawn a bot if configured
+    if (this.botManager && this.gameConfig.bots?.despawnOnJoin) {
+      const removed = this.botManager.despawnOne();
+      if (removed) {
+        this.entities.remove(removed.context.entity.id);
+      }
+    }
 
     this.players.set(id, player);
     this.gameConfig.hooks.onPlayerJoin?.(this, player);
@@ -65,7 +112,12 @@ export class TestRoom implements GameRoomContext {
 
   tick(delta?: number): void {
     this.tickCount++;
-    this.gameConfig.hooks.onTick?.(this, delta ?? 1 / (this.gameConfig.tickRate || 20));
+    const dt = delta ?? 1 / (this.gameConfig.tickRate || 20);
+
+    // Bots think before game tick
+    this.botManager?.tick(this, dt);
+
+    this.gameConfig.hooks.onTick?.(this, dt);
   }
 
   spawnEntity<T extends typeof Entity>(
@@ -84,9 +136,17 @@ export class TestRoom implements GameRoomContext {
     this.entities.remove(entity.id);
   }
 
-  spawnBot(behavior: any, initial?: Record<string, any>): any {
-    // Phase 2 — stub for now
-    return { entity: null, sendInput: () => {} };
+  spawnBot(behavior: BotBehaviorDef, initial?: Record<string, any>): { entity: any; sendInput: (input: Record<string, any>) => void } {
+    const entity = new Entity();
+    if (initial) {
+      Object.assign(entity, initial);
+    }
+    entity.isBot = true;
+    this.entities.add(entity);
+    return {
+      entity,
+      sendInput: (input: Record<string, any>) => entity.onInput(input),
+    };
   }
 
   log(channel: string, message: string): void {

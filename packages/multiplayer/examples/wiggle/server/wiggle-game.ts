@@ -1,6 +1,8 @@
 import { TopiaGame } from '../../../src/index.js';
 import { SnakeEntity } from './entities/SnakeEntity.js';
 import { FoodEntity } from './entities/FoodEntity.js';
+import { WanderBot } from './bots/WanderBot.js';
+import { AggressiveBot } from './bots/AggressiveBot.js';
 
 const ARENA_WIDTH = 800;
 const ARENA_HEIGHT = 600;
@@ -13,6 +15,12 @@ export const WiggleGame = TopiaGame.define({
   tickRate: 20,
   maxPlayers: 12,
   debug: ['scoring', 'collision'],
+  bots: {
+    fillTo: 6,
+    behaviors: [WanderBot, AggressiveBot],
+    despawnOnJoin: true,
+    names: ['Slinky', 'Zigzag', 'Noodle', 'Squiggles', 'Pretzel', 'Swirl'],
+  },
 
   onCreate(room) {
     for (let i = 0; i < FOOD_COUNT; i++) {

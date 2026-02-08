@@ -53,6 +53,9 @@ export class DeferQueue {
     if (this.processing) return;
     this.processing = true;
 
+    // Yield to the event loop so defer() returns before processing starts
+    await Promise.resolve();
+
     while (this.queue.length > 0) {
       const fn = this.queue.shift()!;
       await this.executeWithRetry(fn);

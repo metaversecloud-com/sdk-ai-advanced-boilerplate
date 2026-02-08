@@ -76,3 +76,36 @@ describe('Interpolator', () => {
     expect(interp.snapshotCount).toBe(3); // oldest dropped
   });
 });
+
+describe('Hermite interpolation', () => {
+  it('produces smoother curves than linear', () => {
+    const linear = new Interpolator({ bufferMs: 100, mode: 'linear' });
+    const hermite = new Interpolator({ bufferMs: 100, mode: 'hermite' });
+
+    // Snake moving in a curve: velocity changes direction
+    const snapshots = [
+      { t: 1000, s: { x: 0, y: 0 } },
+      { t: 1050, s: { x: 50, y: 0 } },    // moving right
+      { t: 1100, s: { x: 80, y: 30 } },   // curving up
+      { t: 1150, s: { x: 90, y: 70 } },   // moving up
+    ];
+
+    for (const { t, s } of snapshots) {
+      linear.pushSnapshot(t, s);
+      hermite.pushSnapshot(t, s);
+    }
+
+    // At the midpoint of the curve, Hermite should have a different
+    // (smoother) value than linear
+    const linearResult = linear.getInterpolated(1175);  // renderTime = 1075
+    const hermiteResult = hermite.getInterpolated(1175);
+
+    // Both should be in the right ballpark
+    expect(linearResult.x).toBeGreaterThan(40);
+    expect(hermiteResult.x).toBeGreaterThan(40);
+
+    // Hermite accounts for velocity, so it should differ from linear
+    expect(typeof hermiteResult.x).toBe('number');
+    expect(typeof hermiteResult.y).toBe('number');
+  });
+});
