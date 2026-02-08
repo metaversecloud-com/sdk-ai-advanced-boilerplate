@@ -87,6 +87,21 @@ All UI must target **WCAG 2.2 AA** compliance. Use `/accessibility-compliance` w
 - Reduced motion support (`prefers-reduced-motion`)
 - Screen reader tested for interactive elements
 
+### Implementation Plans — Split by Phase
+
+When writing implementation plans with `/writing-plans`, **always split into multiple files by phase**. Never create a single monolithic plan file.
+
+- **Overview file**: `docs/plans/YYYY-MM-DD-<feature>-00-overview.md` — Goal, architecture, tech stack, table of contents linking to phase files, package structure
+- **Phase files**: `docs/plans/YYYY-MM-DD-<feature>-NN-<phase-name>.md` — One file per phase, each with a back-link header to the overview
+- **Appendix file**: `docs/plans/YYYY-MM-DD-<feature>-appendix.md` — Design decisions, risk register, reference tables
+
+Each phase file should be self-contained enough that an engineer can pick it up and execute without reading the entire plan. Include the back-link header at the top of every phase file:
+
+```markdown
+> **Part of**: [Feature Name Implementation Plan](./YYYY-MM-DD-feature-00-overview.md)
+> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
+```
+
 ### Mandatory Workflow — Brainstorm Before You Build
 
 **When the user describes a new app idea, game concept, or feature**, you MUST invoke `/brainstorming` BEFORE planning or writing any code. Do NOT skip this step. Do NOT jump to `/writing-plans` or implementation.
