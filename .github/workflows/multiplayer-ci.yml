@@ -1,0 +1,122 @@
+name: "@topia/multiplayer CI"
+
+on:
+  push:
+    branches: [main, "feat/**"]
+    paths:
+      - "packages/multiplayer/**"
+      - "packages/create-topia-game/**"
+      - ".github/workflows/multiplayer-ci.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "packages/multiplayer/**"
+      - "packages/create-topia-game/**"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-typecheck:
+    name: Lint & Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check multiplayer
+        run: npx tsc --noEmit
+        working-directory: packages/multiplayer
+
+      - name: Type check create-topia-game
+        run: npx tsc --noEmit
+        working-directory: packages/create-topia-game
+
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18, 20, 22]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run multiplayer tests
+        run: npm test
+        working-directory: packages/multiplayer
+
+      - name: Run create-topia-game tests
+        run: npm test
+        working-directory: packages/create-topia-game
+
+  integration-tests:
+    name: Integration Tests (Redis)
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run integration tests
+        run: npx jest tests/integration/ --config jest.config.ts
+        working-directory: packages/multiplayer
+        env:
+          REDIS_URL: redis://localhost:6379
+
+  build:
+    name: Build Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build multiplayer
+        run: npm run build
+        working-directory: packages/multiplayer
+
+      - name: Build create-topia-game
+        run: npm run build
+        working-directory: packages/create-topia-game
+
+      - name: Verify dist output
+        run: |
+          test -f packages/multiplayer/dist/index.js
+          test -f packages/multiplayer/dist/client.js
+          test -f packages/multiplayer/dist/testing/TestRoom.js
+          test -f packages/create-topia-game/dist/index.js
+          test -f packages/create-topia-game/dist/cli.js
