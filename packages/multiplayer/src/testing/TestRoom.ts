@@ -111,6 +111,11 @@ export class TestRoom implements GameRoomContext {
   }
 
   tick(delta?: number): void {
+    if (this.gameConfig.tickRate === 0 && delta === undefined) {
+      // Event-driven mode: tick() is a no-op unless explicit delta is provided
+      return;
+    }
+
     this.tickCount++;
     const dt = delta ?? 1 / (this.gameConfig.tickRate || 20);
 
@@ -118,6 +123,19 @@ export class TestRoom implements GameRoomContext {
     this.botManager?.tick(this, dt);
 
     this.gameConfig.hooks.onTick?.(this, dt);
+  }
+
+  sendInput(playerId: string, input: Record<string, any>): void {
+    const player = this.players.get(playerId);
+    if (!player) return;
+
+    // Deliver input to the entity
+    if (player.entity?.onInput) {
+      player.entity.onInput(input);
+    }
+
+    // Call the game's onInput hook (used in event-driven games)
+    this.gameConfig.hooks.onInput?.(this, player, input);
   }
 
   spawnEntity<T extends typeof Entity>(

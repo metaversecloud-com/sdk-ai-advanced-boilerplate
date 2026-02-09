@@ -12,6 +12,7 @@ export interface GameConfig {
   hooks: {
     onCreate?: GameDefinition['onCreate'];
     onTick?: GameDefinition['onTick'];
+    onInput?: GameDefinition['onInput'];
     onPlayerJoin?: GameDefinition['onPlayerJoin'];
     onPlayerLeave?: GameDefinition['onPlayerLeave'];
     onSpectatorJoin?: GameDefinition['onSpectatorJoin'];
@@ -34,6 +35,7 @@ export class TopiaGame {
       hooks: {
         onCreate: definition.onCreate,
         onTick: definition.onTick,
+        onInput: definition.onInput,
         onPlayerJoin: definition.onPlayerJoin,
         onPlayerLeave: definition.onPlayerLeave,
         onSpectatorJoin: definition.onSpectatorJoin,

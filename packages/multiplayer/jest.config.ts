@@ -10,7 +10,7 @@ const config: Config = {
   transform: {
     '^.+\\.tsx?$': ['ts-jest', { useESM: true }],
   },
-  testMatch: ['<rootDir>/tests/**/*.test.ts'],
+  testMatch: ['<rootDir>/tests/**/*.test.ts', '<rootDir>/examples/**/tests/*.test.ts'],
   testTimeout: 15000,
 };
 

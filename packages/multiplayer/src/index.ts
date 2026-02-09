@@ -1,5 +1,11 @@
 // Core
 export { EntityCollection } from './core/TopiaRoom.js';
+export { RedisAdapter } from './core/RedisAdapter.js';
+export type { RedisAdapterOptions, RoomRegistryEntry, RoomCheckpoint, RedisClient } from './core/RedisAdapter.js';
+export { FailoverManager } from './core/FailoverManager.js';
+export type { FailoverManagerOptions } from './core/FailoverManager.js';
+export { Metrics } from './core/Metrics.js';
+export type { MetricsOptions } from './core/Metrics.js';
 
 // Game
 export { TopiaGame } from './game/TopiaGame.js';
@@ -21,6 +27,17 @@ export { RoomNaming } from './topia/RoomNaming.js';
 export { DeferQueue } from './topia/DeferQueue.js';
 export { TopiaSDKBridge } from './topia/TopiaSDKBridge.js';
 export type { TopiaSDKBridgeOptions } from './topia/TopiaSDKBridge.js';
+
+// Dev tools
+export { InspectorServer } from './dev/InspectorServer.js';
+export type { InspectorRoom, InspectorServerOptions } from './dev/InspectorServer.js';
+export type {
+  InspectorRoomSummary,
+  InspectorEntityInfo,
+  InspectorRoomStats,
+  InspectorRoomDetail,
+  InspectorStreamEvent,
+} from './dev/InspectorAPI.js';
 
 // Testing
 export { TestRoom } from './testing/TestRoom.js';

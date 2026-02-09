@@ -18,6 +18,7 @@ export interface GameDefinition {
 
   onCreate?(room: GameRoomContext): void | Promise<void>;
   onTick?(room: GameRoomContext, delta: number): void;
+  onInput?(room: GameRoomContext, player: Player, input: Record<string, any>): void;
   onPlayerJoin?(room: GameRoomContext, player: Player): void | Promise<void>;
   onPlayerLeave?(room: GameRoomContext, player: Player): void;
   onSpectatorJoin?(room: GameRoomContext, spectator: Spectator): void;
@@ -76,6 +77,7 @@ export interface GameRoomContext {
   ): InstanceType<T>;
   despawnEntity(entity: any): void;
   spawnBot(behavior: BotBehaviorDef, initial?: Record<string, any>): BotContext;
+  sendInput(playerId: string, input: Record<string, any>): void;
   log(channel: string, message: string): void;
 }
 
