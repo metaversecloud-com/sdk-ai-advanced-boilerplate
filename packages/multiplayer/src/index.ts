@@ -19,6 +19,8 @@ export { SpectatorManager } from './game/SpectatorManager.js';
 export type { SpectatorManagerOptions } from './game/SpectatorManager.js';
 export { Logger } from './game/Logger.js';
 export type { LoggerOptions } from './game/Logger.js';
+export { PhysicsWorld } from './game/PhysicsWorld.js';
+export type { PhysicsBody, MatterModule, MatterEngine, MatterBody, MatterWorld, PhysicsWorldOptions } from './game/PhysicsWorld.js';
 
 // Topia integration
 export { TopiaCredentials } from './topia/TopiaCredentials.js';
