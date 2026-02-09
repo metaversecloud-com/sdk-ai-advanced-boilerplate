@@ -3,11 +3,19 @@ interface Snapshot {
   state: Record<string, number>;
 }
 
+/** Velocity fields for physics extrapolation mode. */
+export interface PhysicsFieldMapping {
+  position: string;    // e.g. 'x'
+  velocity: string;    // e.g. 'vx'
+  acceleration?: string; // e.g. 'ax' (optional)
+}
+
 export interface InterpolatorOptions {
   bufferMs?: number;       // How far behind real-time to render (default 100ms)
   maxSnapshots?: number;   // Ring buffer size (default 30)
   angleFields?: string[];  // Fields that use shortest-arc lerp
-  mode?: 'linear' | 'hermite';  // Interpolation mode (default 'linear')
+  mode?: 'linear' | 'hermite' | 'physics';  // Interpolation mode (default 'linear')
+  physicsFields?: PhysicsFieldMapping[];  // Required when mode is 'physics'
 }
 
 export class Interpolator {
@@ -15,13 +23,15 @@ export class Interpolator {
   private bufferMs: number;
   private maxSnapshots: number;
   private angleFields: Set<string>;
-  private mode: 'linear' | 'hermite';
+  private mode: 'linear' | 'hermite' | 'physics';
+  private physicsFields: PhysicsFieldMapping[];
 
   constructor(options: InterpolatorOptions = {}) {
     this.bufferMs = options.bufferMs ?? 100;
     this.maxSnapshots = options.maxSnapshots ?? 30;
     this.angleFields = new Set(options.angleFields ?? []);
     this.mode = options.mode ?? 'linear';
+    this.physicsFields = options.physicsFields ?? [];
   }
 
   get snapshotCount(): number {
@@ -45,8 +55,11 @@ export class Interpolator {
       return { ...this.snapshots[0].state };
     }
 
-    // After last snapshot
+    // After last snapshot — physics mode extrapolates, others clamp
     if (renderTime >= this.snapshots[this.snapshots.length - 1].timestamp) {
+      if (this.mode === 'physics' && this.physicsFields.length > 0) {
+        return this.physicsExtrapolate(this.snapshots[this.snapshots.length - 1], renderTime);
+      }
       return { ...this.snapshots[this.snapshots.length - 1].state };
     }
 
@@ -60,6 +73,10 @@ export class Interpolator {
     const to = this.snapshots[i + 1];
     const range = to.timestamp - from.timestamp;
     const t = range === 0 ? 0 : (renderTime - from.timestamp) / range;
+
+    if (this.mode === 'physics' && this.physicsFields.length > 0) {
+      return this.physicsInterpolate(from, to, t, renderTime);
+    }
 
     if (this.mode === 'hermite' && this.snapshots.length >= 2) {
       const prev = i > 0 ? this.snapshots[i - 1] : null;
@@ -162,6 +179,59 @@ export class Interpolator {
     const TWO_PI = Math.PI * 2;
     let diff = ((b - a) % TWO_PI + TWO_PI + Math.PI) % TWO_PI - Math.PI;
     return a + diff * t;
+  }
+
+  /**
+   * Physics interpolation: lerp positions, but use velocity to improve
+   * the estimate between server snapshots.
+   */
+  private physicsInterpolate(
+    from: Snapshot,
+    to: Snapshot,
+    t: number,
+    renderTime: number,
+  ): Record<string, number> {
+    const result = this.lerp(from.state, to.state, t);
+
+    // For physics-mapped fields, blend in velocity-based prediction
+    const dt = (renderTime - from.timestamp) / 1000;
+
+    for (const mapping of this.physicsFields) {
+      const vel = from.state[mapping.velocity] ?? 0;
+      const acc = mapping.acceleration ? (from.state[mapping.acceleration] ?? 0) : 0;
+
+      // Kinematic prediction from the "from" snapshot
+      const posFrom = from.state[mapping.position] ?? 0;
+      const predicted = posFrom + vel * dt + 0.5 * acc * dt * dt;
+
+      // Blend between pure lerp and velocity-based prediction
+      // Use t as blend factor: at t=0 we trust velocity more, at t=1 we trust the lerp
+      result[mapping.position] = result[mapping.position] * t + predicted * (1 - t);
+    }
+
+    return result;
+  }
+
+  /**
+   * Physics extrapolation: project forward from the latest snapshot
+   * using velocity and optional acceleration.
+   */
+  private physicsExtrapolate(
+    latest: Snapshot,
+    renderTime: number,
+  ): Record<string, number> {
+    const result = { ...latest.state };
+    const dt = (renderTime - latest.timestamp) / 1000;
+
+    for (const mapping of this.physicsFields) {
+      const pos = latest.state[mapping.position] ?? 0;
+      const vel = latest.state[mapping.velocity] ?? 0;
+      const acc = mapping.acceleration ? (latest.state[mapping.acceleration] ?? 0) : 0;
+
+      result[mapping.position] = pos + vel * dt + 0.5 * acc * dt * dt;
+    }
+
+    return result;
   }
 
   reset(): void {
