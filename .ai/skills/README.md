@@ -20,6 +20,7 @@ description: Task-to-skill lookup table for Topia SDK app development. Use when 
 | Add analytics tracking | [add-analytics](./add-analytics.md) | Starter | At least one data object write |
 | Add admin-only functionality | [add-admin-feature](./add-admin-feature.md) | Starter | At least one route |
 | Write tests for a route | [write-tests](./write-tests.md) | Starter | At least one route |
+| Add real-time multiplayer | [add-multiplayer](./add-multiplayer.md) | Advanced | add-route, add-component |
 | Debug a failing SDK call | [debug-sdk](./debug-sdk.md) | Reference | None |
 
 ## Skill Hierarchy
@@ -32,6 +33,9 @@ Composed (build on foundations):
   add-leaderboard = route + data-object + component
   add-badges      = route + component + inventory cache
   add-game-mechanic = data-object + route
+
+Advanced (external framework):
+  add-multiplayer = @topia/multiplayer + route + component
 
 Self-contained:
   add-admin-feature  ·  add-analytics  ·  write-tests  ·  debug-sdk
