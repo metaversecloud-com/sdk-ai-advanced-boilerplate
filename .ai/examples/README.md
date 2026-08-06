@@ -44,6 +44,7 @@ Use this index to find examples by keyword. Search for the concept you need — 
 | [locking-strategies.md](./locking-strategies.md) | `lock, race-condition, concurrency, atomic, time-bucket, mutex` | Time-bucketed locking to prevent concurrent write conflicts |
 | [owner-vs-viewer.md](./owner-vs-viewer.md) | `owner, viewer, permission, ownership, profile, access-control` | Differentiate between asset owner and other visitors |
 | [real-time-sse-redis.md](./real-time-sse-redis.md) | `real-time, SSE, Redis, pub-sub, live-update, streaming, multiplayer` | Server-Sent Events with Redis for real-time multiplayer |
+| [multiplayer-integration.md](./multiplayer-integration.md) | `multiplayer, real-time, game, entity, bot, room, Colyseus, physics, interpolation` | Integrate @topia/multiplayer for real-time multiplayer games |
 
 ## Asset Management
 
