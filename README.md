@@ -1,119 +1,138 @@
-# sdk-ai-advanced-boilerplate
+# SDK App README Template
 
-> This README is a template. At HEAD on `dev` this repo is **scaffolding-only** — only the ArgoCD GitOps manifests under [`argo/`](./argo) exist; there is no `client/`, `server/`, `shared/`, `.ai/`, `package.json`, or test suite yet. When you fork this into a real app (or when the "advanced" application layer lands), **replace this file** with one that describes the app while keeping the same section structure so world builders and other developers can find what they need in a predictable place.
->
-> For the fully fleshed-out template with `client/` + `server/` code, tests, and `.ai/` docs, see the basic [sdk-ai-boilerplate](../sdk-ai-boilerplate).
+> This README is a template. When you fork the boilerplate into a new app, **replace this file** with one that describes your app — keep the same section structure so world builders and other developers can find what they need in a predictable place.
 
 ## Introduction / Summary
 
-`sdk-ai-advanced-boilerplate` is a companion repo to [`sdk-ai-boilerplate`](../sdk-ai-boilerplate) intended to host a more feature-rich AI/Topia SDK starter. Today (at HEAD on `dev`) the repo carries only the deployment scaffolding needed for the Topia SDK-apps ApplicationSet to discover and deploy the service once application code is added. The scaffolding wires up:
+One- or two-sentence description of what this app does and who it's for.
 
-- ArgoCD auto-discovery via the SDK-apps ApplicationSet (see the two-branch contract in [`argo/README.md`](./argo/README.md))
-- KEDA HTTP add-on scale-to-zero (0↔1) in dev, with the interceptor holding first requests during cold start
-- SealedSecrets for `INTERACTIVE_SECRET` (ciphertext only in git; controller unseals into a `Secret` consumed via `envFrom`)
-- A shared ALB group for all dev SDK apps at `topia-rtsdk.com`
+This template is meant to give you a simple starting point to build new features in Topia using our JavaScript SDK. Please reference the [SDK documentation](https://metaversecloud-com.github.io/mc-sdk-js/index.html) for a more detailed breakdown of what the SDK is capable of and how to use it.
 
 ## Key Features
 
-Because no application code exists at HEAD on `dev` yet, the "features" here are the deployment scaffolding features — not app features.
+### Canvas elements & interactions
 
-### Deployment scaffolding
+- **Key Asset:** When clicked, this asset opens the drawer and allows visitors and admins to start interacting with the app.
 
-- **ArgoCD ApplicationSet auto-discovery.** `main` carries only `argo/envs/*/config.json` (with `"targetRevision": "dev"`); the SDK-apps ApplicationSet's git-files generator reads this to detect the repo and points the generated Application at `dev` for the actual manifests.
-- **KEDA scale-to-zero (dev).** `HTTPScaledObject` runs the deployment at `min: 0`, `max: 1`, scaledown period 3 h. The KEDA HTTP interceptor lives in the `keda` namespace and holds the first request while the pod scales 0→1.
-- **Sealed secrets.** `ai-advanced-boilerplate0-sealedsecret.yaml` is strict-scope for `sdk-apps-dev` and contains only ciphertext. The sealed-secrets controller unseals it into `Secret ai-advanced-boilerplate0-secrets` for `envFrom`.
-- **Shared ALB.** The production `Ingress` under `argo/services/` joins the `topia-dev` ALB group so all SDK apps share one load balancer. The dev overlay deletes that Ingress and routes through the KEDA interceptor Ingress instead.
-- **Health probes.** Liveness + readiness both hit `/api/system/health` on port `3000`. The app has to expose this endpoint the moment code lands or the pod will never go Ready.
+### Drawer content
 
-### Application features
+- How to play instructions
+- Leaderboard
+- Admin features (see below)
 
-_Not implemented yet._ When the app layer lands, document its canvas interactions, drawer content, and admin features here — following the section shape from [`sdk-ai-boilerplate/README.md`](../sdk-ai-boilerplate/README.md).
+### Admin features
+
+_Does your app have special admin functionality? If so your key features may look something like this:_
+
+- **Access:** Click on the key asset to open the drawer and then select the Admin tab. Any changes made here only affect this instance of the application and do not impact other instances dropped in this or other worlds.
+- **Theme selection:** Use the dropdown to select a theme.
+- **Reset:** Click the Reset button to clear the active game state and rebuild the game board in its default state.
+
+### Themes description
+
+- **Winter (default):** A snowy theme that drops snowflakes throughout the scene.
+- **Spring:** A garden theme that drops flowers throughout the scene.
 
 ## Required Assets with Unique Names
 
-_Not applicable yet_ — there is no `server/` code that reads or writes dropped assets. When the app layer is added, document the required `uniqueName` patterns here in the same table shape:
+_If your app uses dropped assets on the canvas that are found by unique name, document them here. This helps world builders set up the correct assets for the app to function._
 
-| Unique Name Pattern | Description |
-| ------------------- | ----------- |
-| _TBD_               | _TBD_       |
+| Unique Name Pattern | Description                                             |
+| ------------------- | ------------------------------------------------------- |
+| `AppName_keyAsset`  | Key asset that opens the app drawer                     |
+| `AppName_item_{id}` | Dynamically created assets (created/deleted by the app) |
+
+> **Note:** Assets with fixed unique names (e.g., `AppName_keyAsset`) must be placed in the world manually by an admin. Assets with dynamic patterns (e.g., `AppName_item_{timestamp}`) are created and managed by the app at runtime.
 
 ## Technical Architecture
 
 ### Data Objects
 
-_Not applicable yet._ When the app layer lands, document the Visitor / Key Asset / World data-object shapes here (TypeScript interfaces).
+_Data objects store information about each implementation of the app per world._
 
-### Deployment topology (what exists today)
+#### Visitor / User
 
-| Layer               | Detail                                                                                                              |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| Container image     | `368076259134.dkr.ecr.us-east-1.amazonaws.com/sdk-example:sdk-ai-advanced-boilerplate` (mapped via overlay `images:`) |
-| Service             | `ai-advanced-boilerplate0` (ClusterIP, port `80` → containerPort `3000`)                                            |
-| Ingress (dev)       | KEDA interceptor at `ai-advanced-boilerplate0-dev-topia.topia-rtsdk.com` (direct ALB Ingress is patched out in dev) |
-| Namespace           | `sdk-apps-dev`                                                                                                      |
-| Cluster             | `Topia-dev-SDK-Apps` (EKS)                                                                                          |
-| Resource requests   | CPU `100m`, memory `128Mi` (limits `1` CPU / `256Mi`)                                                               |
-| Termination grace   | 30 s                                                                                                                 |
+The data object attached to the visitor stores information related specifically to the visitor (e.g., progress). For tracking across multiple world instances, use `${urlSlug}_${sceneDropId}` as a unique key. Example data:
+
+```ts
+{
+  [`${urlSlug}_${sceneDropId}`]: {
+    currentStreak: number,
+    lastCollectedDate: string,
+    longestStreak: number,
+    totalCollected: number,
+  }
+}
+```
+
+#### Key Asset
+
+The data object attached to the dropped key asset stores information related to this specific instance of the app and is deleted if the key asset is removed from the world. Example data:
+
+```ts
+{
+  isResetInProgress: boolean;
+  lastInteractionDate: string;
+  lastPlayerTurn: string;
+  playerCount: number;
+  resetCount: number;
+  turnCount: number;
+}
+```
+
+#### World
+
+The data object attached to the world stores information for every instance of the app in a given world, keyed by `keyAssetId` or `sceneDropId`. It persists even if a specific instance is removed. Keep World data minimal to avoid hitting size limits. Example data:
+
+```ts
+{
+  [sceneDropId]: {
+    keyAssetId: string;
+    themeId: string;
+  }
+}
+```
 
 ## API Endpoints
 
-_No application routes exist yet._ The only endpoint contract implied by the scaffolding is the health check the app **must** expose once server code lands:
+_Document every server route the client (or external systems) can call. Group by feature so it's easy to scan._
 
-| Method | Route                | Description                                                                    |
-| ------ | -------------------- | ------------------------------------------------------------------------------ |
-| `GET`  | `/api/system/health` | Liveness + readiness probe target. Referenced by the Deployment and by `alb.ingress.kubernetes.io/healthcheck-path` on the shared-ALB Ingress. Must return 2xx once the app is up. |
+| Method | Route                | Description                                                            |
+| ------ | -------------------- | ---------------------------------------------------------------------- |
+| `GET`  | `/visitor`           | Initialize / fetch visitor data (calls `getVisitor` utility)           |
+| `GET`  | `/game-state`        | Return the current per-asset game state from the key asset data object |
+| `POST` | `/game-state`        | Update game state (admin or gameplay actions)                          |
+| `GET`  | `/leaderboard`       | Return the world-scoped leaderboard for this app                       |
+| `POST` | `/leaderboard`       | Submit a score to the leaderboard                                      |
+| `GET`  | `/admin/settings`    | Return admin-configurable settings for this asset                      |
+| `POST` | `/admin/settings`    | Update admin settings (admin-only)                                     |
+| `POST` | `/admin/reset`       | Reset the game state for this asset (admin-only)                       |
+| `GET`  | `/sse/:assetId`      | Open an SSE stream for real-time updates (if the app uses SSE)         |
+| `POST` | `/webhook`           | Receive webhook callbacks from the Topia platform                      |
 
-## Analytics
-
-_None._ There is no application code and therefore no analytics events fired. When the app layer is added, list every `analyticName` this app fires here — with what triggers each event and where it lives in the code — in the same table shape used by [`sdk-ai-boilerplate/README.md`](../sdk-ai-boilerplate/README.md).
-
-| Event | Fired when | Where |
-| ----- | ---------- | ----- |
-| _None yet_ | — | — |
+> Real-time updates pattern: see `.ai/rules.md` → **REAL-TIME UPDATES (SSE)** and the canonical reference implementation in `topia-sdk-apps/sdk-ring-toss/server/utils/sseManager.ts`.
 
 ## Environment Variables
 
-The dev deployment sources environment from two Kubernetes objects (both consumed via `envFrom`):
+Create a `.env` file in the root directory. See `.env-example` for a template.
 
-**ConfigMap `ai-advanced-boilerplate0-config`** (non-secret, plaintext in `argo/overlays/dev/ai-advanced-boilerplate0-config.yaml`):
-
-| Variable            | Description                                                                          | Required |
-| ------------------- | ------------------------------------------------------------------------------------ | -------- |
-| `API_URL`           | Base URL the app itself is reached at. Placeholder `REPLACE_WITH_API_URL` in the manifest — seeded by the Terraform-templated CI job, not by ArgoCD. | Yes      |
-| `INSTANCE_DOMAIN`   | Topia API domain (`api.topia.io` for production)                                     | Yes      |
-| `INSTANCE_PROTOCOL` | `https` for production/staging, `http` only for local                                | Yes      |
-| `INTERACTIVE_KEY`   | Topia interactive app key. Placeholder `REPLACE_WITH_REAL_INTERACTIVE_KEY` in the manifest — seeded out-of-band by the Terraform-templated CI job. Public value; safe in the ConfigMap. | Yes      |
-| `NODE_ENV`          | Node environment (`production` in dev overlay)                                       | No       |
-
-**Secret `ai-advanced-boilerplate0-secrets`** (unsealed from `ai-advanced-boilerplate0-sealedsecret.yaml`):
-
-| Variable             | Description                                                                                | Required |
-| -------------------- | ------------------------------------------------------------------------------------------ | -------- |
-| `INTERACTIVE_SECRET` | Topia interactive app secret. Committed only as SealedSecret ciphertext; unsealed by the controller into a plain `Secret` in `sdk-apps-dev`. | Yes      |
-
-For local development once app code is added, mirror the sdk-ai-boilerplate `.env-example` pattern:
-
-```
-INTERACTIVE_KEY=your_interactive_key_here
-INTERACTIVE_SECRET=your_interactive_secret_here
-INSTANCE_DOMAIN=api.topia.io
-INSTANCE_PROTOCOL=https
-```
+| Variable               | Description                                                                        | Required |
+| ---------------------- | ---------------------------------------------------------------------------------- | -------- |
+| `INTERACTIVE_KEY`      | Topia interactive app key                                                          | Yes      |
+| `INTERACTIVE_SECRET`   | Topia interactive app secret                                                       | Yes      |
+| `INSTANCE_DOMAIN`      | Topia API domain (`api.topia.io` for production, `api-stage.topia.io` for staging) | Yes      |
+| `INSTANCE_PROTOCOL`    | `https` for production/staging, `http` only for local                              | Yes      |
+| `NODE_ENV`             | Node environment                                                                   | No       |
+| `PORT`                 | Server port (defaults to `3001`)                                                   | No       |
+| `LEADERBOARD_BASE_URL` | Base URL for the leaderboard service (if applicable)                               | No       |
+| `SKIP_PREFLIGHT_CHECK` | Skip CRA preflight check                                                           | No       |
 
 ### Where to find `INTERACTIVE_KEY` and `INTERACTIVE_SECRET`
 
+- [Topia Dev Account Dashboard](https://dev.topia.io/t/dashboard/integrations)
 - [Topia Production Account Dashboard](https://topia.io/t/dashboard/integrations)
 
 ## Getting Started
-
-At HEAD on `dev` there is no application to run locally. The only thing you can do today is render the K8s manifests:
-
-```bash
-# from the app root — render the dev overlay
-kubectl kustomize argo/overlays/dev
-```
-
-Once application code is added (mirroring [sdk-ai-boilerplate](../sdk-ai-boilerplate)'s `client/` + `server/` layout), the expected run flow will be:
 
 ```bash
 # from the app root
@@ -131,41 +150,54 @@ npm run dev
 
 ### Built With
 
-Nothing at the application layer yet. The current stack is Kubernetes / ArgoCD / KEDA:
+#### Client
 
-- ArgoCD ApplicationSet (git-files generator, two-branch contract)
-- Kustomize overlays (`argo/overlays/dev` extends `argo/services/ai-advanced-boilerplate0`)
-- KEDA HTTP add-on (scale-to-zero interceptor)
-- Bitnami SealedSecrets
-- AWS ALB Ingress Controller (shared ALB via group `topia-dev`)
+![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
 
-When the client/server land they will mirror the basic boilerplate stack: React + TypeScript (Vite) on the client, Node + Express on the server, `@rtsdk/topia` for SDK calls.
+#### Server
+
+![Node.js](https://img.shields.io/badge/node.js-%2343853D.svg?style=for-the-badge&logo=node.js&logoColor=white)
+![Express](https://img.shields.io/badge/express-%23000000.svg?style=for-the-badge&logo=express&logoColor=white)
 
 ### Deployment
 
-The two-branch contract enforced by the ApplicationSet:
+Deployment is driven by ArgoCD via the SDK-apps ApplicationSet. The two-branch contract it enforces:
 
 - **`main`** — ONLY `argo/envs/*/config.json`, each with `"targetRevision": "dev"`. The appset's git-files generator reads these to detect the repo; `targetRevision` points the generated Application at `dev` for the manifests.
 - **`dev`** — the full argo tree (`services/` + `overlays/` + `envs/` WITHOUT `targetRevision`).
 
-Environment map:
+| Env | Service                    | Namespace      | Host                                                 | Health               |
+| --- | -------------------------- | -------------- | ---------------------------------------------------- | -------------------- |
+| dev | `ai-advanced-boilerplate0` | `sdk-apps-dev` | `ai-advanced-boilerplate0-dev-topia.topia-rtsdk.com` | `/api/system/health` |
 
-| Env | Service                       | Namespace       | Host                                                    | Health                 |
-| --- | ----------------------------- | --------------- | ------------------------------------------------------- | ---------------------- |
-| dev | `ai-advanced-boilerplate0`    | `sdk-apps-dev`  | `ai-advanced-boilerplate0-dev-topia.topia-rtsdk.com`    | `/api/system/health`   |
+The dev overlay runs the deployment through the KEDA HTTP add-on at `min: 0` / `max: 1` (scale-to-zero), with the interceptor holding the first request during a 0→1 cold start. `INTERACTIVE_SECRET` is committed only as SealedSecret ciphertext and unsealed by the controller into `ai-advanced-boilerplate0-secrets`. Liveness and readiness both hit `/api/system/health` on port `3000`, so that endpoint must stay 2xx or the pod never goes Ready.
+
+This repo carries no CI workflows, matching [`sdk-ai-boilerplate`](https://github.com/metaversecloud-com/sdk-ai-boilerplate). A repo forked from this template needs the standard `aws_auto_release.yml`, `aws_dev_release_gitops.yml`, and `aws_prod_release.yml` workflows added before it can build or deploy.
 
 See [`argo/README.md`](./argo/README.md) for the full deployment contract.
 
-### Styling / Accessibility / SDK fundamentals
+### Styling
 
-The application layer does not exist yet, so there are no style, a11y, or SDK-usage rules in this repo. When the app lands, follow the same conventions the basic boilerplate documents:
+This project uses the Topia SDK's CSS classes for consistent styling, layered with Tailwind via CSS cascade layers (`@layer tailwind, sdk;` — SDK wins over Tailwind, unlayered project CSS wins over both). Tailwind preflight is disabled to avoid clobbering SDK defaults.
 
-- [`sdk-ai-boilerplate/.ai/style-guide.md`](../sdk-ai-boilerplate/.ai/style-guide.md) — SDK CSS classes + Tailwind cascade-layer setup
-- [`sdk-ai-boilerplate/.ai/accessibility.md`](../sdk-ai-boilerplate/.ai/accessibility.md) — WCAG 2.1 AA patterns
-- [`sdk-ai-boilerplate/.ai/sdk-fundamentals.md`](../sdk-ai-boilerplate/.ai/sdk-fundamentals.md) — Interactive Keys, JWT signing, iframes vs webhooks, session credentials, dropped-asset ops, backend validation
+- Read [`.ai/style-guide.md`](.ai/style-guide.md) for the full SDK class catalog, the cascade-layer setup (`client/src/index.css`, `client/index.html`, `client/tailwind.config.js`), custom CSS conventions, and the component structure pattern.
+- The canonical reference implementation lives in [`topia-sdk-apps/sdk-escape-room/client/src/index.css`](../sdk-escape-room/client/src/index.css).
+
+### Accessibility
+
+Every UI change must meet **WCAG 2.1 AA**.
+
+- Read [`.ai/accessibility.md`](.ai/accessibility.md) for the required patterns: semantic elements, icon-button labeling, form labels, the modal dialog contract, focus management, contrast, motion, and the testing flow.
+
+### SDK fundamentals
+
+If anything about how the SDK *works* is unclear (Interactive Keys, JWT signing, iframes vs webhooks, session credentials, dropped-asset operations, backend validation), read [`.ai/sdk-fundamentals.md`](.ai/sdk-fundamentals.md).
 
 ### Helpful links
 
 - [SDK Developer docs](https://metaversecloud-com.github.io/mc-sdk-js/index.html)
-- [Basic boilerplate — `sdk-ai-boilerplate`](../sdk-ai-boilerplate)
-- Dev host (once app code is deployed): `https://ai-advanced-boilerplate0-dev-topia.topia-rtsdk.com`
+- [View this app in production](https://topia.io/appname-prod) *(replace with your app's URL)*
+- On-canvas turn-based game reference — TicTacToe: [GitHub](https://github.com/metaversecloud-com/sdk-tictactoe) · [demo](https://topia.io/tictactoe-prod)
