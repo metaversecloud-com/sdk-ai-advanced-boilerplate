@@ -1,6 +1,6 @@
 # sdk-ai-advanced-boilerplate
 
-> This README is a template. At HEAD on `dev` this repo is **scaffolding-only** — only the ArgoCD GitOps manifests under [`argo/`](./argo) exist; there is no `client/`, `server/`, `shared/`, `.ai/`, `package.json`, or test suite yet. When you fork this into a real app (or when the "advanced" application layer lands), **replace this file** with one that describes the app while keeping the same section structure so world builders and other developers can find what they need in a predictable place.
+> This README is a template. At HEAD on `dev` this repo is **scaffolding-only** — it carries no deployment manifests (see Deployment below); there is no `client/`, `server/`, `shared/`, `.ai/`, `package.json`, or test suite yet. When you fork this into a real app (or when the "advanced" application layer lands), **replace this file** with one that describes the app while keeping the same section structure so world builders and other developers can find what they need in a predictable place.
 >
 > For the fully fleshed-out template with `client/` + `server/` code, tests, and `.ai/` docs, see the basic [sdk-ai-boilerplate](../sdk-ai-boilerplate).
 
@@ -8,7 +8,7 @@
 
 `sdk-ai-advanced-boilerplate` is a companion repo to [`sdk-ai-boilerplate`](../sdk-ai-boilerplate) intended to host a more feature-rich AI/Topia SDK starter. Today (at HEAD on `dev`) the repo carries only the deployment scaffolding needed for the Topia SDK-apps ApplicationSet to discover and deploy the service once application code is added. The scaffolding wires up:
 
-- ArgoCD auto-discovery via the SDK-apps ApplicationSet (see the two-branch contract in [`argo/README.md`](./argo/README.md))
+- ArgoCD auto-discovery via the SDK-apps ApplicationSet once a fork adds its `apps/<repo>/` in [`sdk-gitops`](https://github.com/metaversecloud-com/sdk-gitops)
 - KEDA HTTP add-on scale-to-zero (0↔1) in dev, with the interceptor holding first requests during cold start
 - SealedSecrets for `INTERACTIVE_SECRET` (ciphertext only in git; controller unseals into a `Secret` consumed via `envFrom`)
 - A shared ALB group for all dev SDK apps at `topia-rtsdk.com`
@@ -19,10 +19,10 @@ Because no application code exists at HEAD on `dev` yet, the "features" here are
 
 ### Deployment scaffolding
 
-- **ArgoCD ApplicationSet auto-discovery.** `main` carries only `argo/envs/*/config.json` (with `"targetRevision": "dev"`); the SDK-apps ApplicationSet's git-files generator reads this to detect the repo and points the generated Application at `dev` for the actual manifests.
+- **ArgoCD ApplicationSet auto-discovery.** Manifests for a real app live in [`sdk-gitops`](https://github.com/metaversecloud-com/sdk-gitops) under `apps/<repo>/`; this repo only builds the image. Nothing here decides what is deployed.
 - **KEDA scale-to-zero (dev).** `HTTPScaledObject` runs the deployment at `min: 0`, `max: 1`, scaledown period 3 h. The KEDA HTTP interceptor lives in the `keda` namespace and holds the first request while the pod scales 0→1.
 - **Sealed secrets.** `ai-advanced-boilerplate0-sealedsecret.yaml` is strict-scope for `sdk-apps-dev` and contains only ciphertext. The sealed-secrets controller unseals it into `Secret ai-advanced-boilerplate0-secrets` for `envFrom`.
-- **Shared ALB.** The production `Ingress` under `argo/services/` joins the `topia-dev` ALB group so all SDK apps share one load balancer. The dev overlay deletes that Ingress and routes through the KEDA interceptor Ingress instead.
+- **Shared ALB.** The `Ingress` in the service template (sdk-gitops `services/ai-advanced-boilerplate0/`) joins the `topia-dev` ALB group so all SDK apps share one load balancer. The dev env deletes that Ingress and routes through the KEDA interceptor Ingress instead.
 - **Health probes.** Liveness + readiness both hit `/api/system/health` on port `3000`. The app has to expose this endpoint the moment code lands or the pod will never go Ready.
 
 ### Application features
@@ -75,7 +75,7 @@ _None._ There is no application code and therefore no analytics events fired. Wh
 
 The dev deployment sources environment from two Kubernetes objects (both consumed via `envFrom`):
 
-**ConfigMap `ai-advanced-boilerplate0-config`** (non-secret, plaintext in `argo/overlays/dev/ai-advanced-boilerplate0-config.yaml`):
+**ConfigMap `ai-advanced-boilerplate0-config`** (non-secret, plaintext in sdk-gitops `apps/<repo>/envs/dev/<svc>-config.yaml`):
 
 | Variable            | Description                                                                          | Required |
 | ------------------- | ------------------------------------------------------------------------------------ | -------- |
@@ -110,7 +110,7 @@ At HEAD on `dev` there is no application to run locally. The only thing you can 
 
 ```bash
 # from the app root — render the dev overlay
-kubectl kustomize argo/overlays/dev
+kubectl kustomize apps/<repo>/envs/dev   # in the sdk-gitops checkout
 ```
 
 Once application code is added (mirroring [sdk-ai-boilerplate](../sdk-ai-boilerplate)'s `client/` + `server/` layout), the expected run flow will be:
@@ -133,8 +133,8 @@ npm run dev
 
 Nothing at the application layer yet. The current stack is Kubernetes / ArgoCD / KEDA:
 
-- ArgoCD ApplicationSet (git-files generator, two-branch contract)
-- Kustomize overlays (`argo/overlays/dev` extends `argo/services/ai-advanced-boilerplate0`)
+- ArgoCD ApplicationSet in sdk-gitops (git-files generator over `apps/*/envs/*/config.json`)
+- Kustomize overlays in sdk-gitops (`envs/dev` extends `services/ai-advanced-boilerplate0`)
 - KEDA HTTP add-on (scale-to-zero interceptor)
 - Bitnami SealedSecrets
 - AWS ALB Ingress Controller (shared ALB via group `topia-dev`)
@@ -143,18 +143,23 @@ When the client/server land they will mirror the basic boilerplate stack: React 
 
 ### Deployment
 
-The two-branch contract enforced by the ApplicationSet:
+This repo only builds an image. On every push to `dev`, CI pushes it to the shared dev ECR under
+the mutable tag `sdk-example:<repo>`; a merged PR into `main` cuts a release for prod. No Kubernetes
+manifests live here, and this template has no entry in [`sdk-gitops`](https://github.com/metaversecloud-com/sdk-gitops) because it is not a deployable app.
 
-- **`main`** — ONLY `argo/envs/*/config.json`, each with `"targetRevision": "dev"`. The appset's git-files generator reads these to detect the repo; `targetRevision` points the generated Application at `dev` for the manifests.
-- **`dev`** — the full argo tree (`services/` + `overlays/` + `envs/` WITHOUT `targetRevision`).
+A fork is enrolled by adding, in `sdk-gitops`, its own `apps/<repo>/services/<svc>/` (Deployment,
+Service, Ingress) and `apps/<repo>/envs/<env>/` (kustomization, `config.json`, ConfigMap,
+SealedSecret, KEDA HTTPScaledObject) copied from a sibling app, plus an `applicationRefs` entry for
+Argo CD Image Updater and a host on the shared interceptor Ingress. Image Updater then pins the
+current digest of the tag in `sdk-gitops`; nothing is ever written back to the app repo.
 
-Environment map:
+Environment map a fork would declare:
 
 | Env | Service                       | Namespace       | Host                                                    | Health                 |
 | --- | ----------------------------- | --------------- | ------------------------------------------------------- | ---------------------- |
 | dev | `ai-advanced-boilerplate0`    | `sdk-apps-dev`  | `ai-advanced-boilerplate0-dev-topia.topia-rtsdk.com`    | `/api/system/health`   |
 
-See [`argo/README.md`](./argo/README.md) for the full deployment contract.
+See the [`sdk-gitops` README](https://github.com/metaversecloud-com/sdk-gitops) for the full deployment contract.
 
 ### Styling / Accessibility / SDK fundamentals
 
