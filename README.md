@@ -164,20 +164,19 @@ npm run dev
 
 ### Deployment
 
-Deployment is driven by ArgoCD via the SDK-apps ApplicationSet. The two-branch contract it enforces:
+This repo only builds an image. On every push to `dev`, CI pushes it to the shared dev ECR under
+the mutable tag `sdk-example:<repo>`; a merged PR into `main` cuts a release for prod. No Kubernetes
+manifests live here.
 
-- **`main`** — ONLY `argo/envs/*/config.json`, each with `"targetRevision": "dev"`. The appset's git-files generator reads these to detect the repo; `targetRevision` points the generated Application at `dev` for the manifests.
-- **`dev`** — the full argo tree (`services/` + `overlays/` + `envs/` WITHOUT `targetRevision`).
-
-| Env | Service                    | Namespace      | Host                                                 | Health               |
-| --- | -------------------------- | -------------- | ---------------------------------------------------- | -------------------- |
-| dev | `ai-advanced-boilerplate0` | `sdk-apps-dev` | `ai-advanced-boilerplate0-dev-topia.topia-rtsdk.com` | `/api/system/health` |
-
-The dev overlay runs the deployment through the KEDA HTTP add-on at `min: 0` / `max: 1` (scale-to-zero), with the interceptor holding the first request during a 0→1 cold start. `INTERACTIVE_SECRET` is committed only as SealedSecret ciphertext and unsealed by the controller into `ai-advanced-boilerplate0-secrets`. Liveness and readiness both hit `/api/system/health` on port `3000`, so that endpoint must stay 2xx or the pod never goes Ready.
+What runs where is declared in [`metaversecloud-com/sdk-gitops`](https://github.com/metaversecloud-com/sdk-gitops): one directory per app,
+`apps/<repo>/services/<svc>/` (Deployment, Service, Ingress) and `apps/<repo>/envs/<env>/`
+(kustomization, `config.json`, ConfigMap, SealedSecret, KEDA HTTPScaledObject). Argo CD Image
+Updater pins the current digest of the tag there, so a fork of this template is enrolled by adding its
+own `apps/<repo>/` copied from a sibling app, an `applicationRefs` entry and a host on the shared
+interceptor Ingress — see that repo's README. Liveness and readiness probes hit `/api/system/health`
+on port `3000`, so that endpoint must stay 2xx or the pod never goes Ready.
 
 This repo carries no CI workflows, matching [`sdk-ai-boilerplate`](https://github.com/metaversecloud-com/sdk-ai-boilerplate). A repo forked from this template needs the standard `aws_auto_release.yml`, `aws_dev_release_gitops.yml`, and `aws_prod_release.yml` workflows added before it can build or deploy.
-
-See [`argo/README.md`](./argo/README.md) for the full deployment contract.
 
 ### Styling
 
